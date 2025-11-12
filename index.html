@@ -1,182 +1,93 @@
 <!doctype html>
 <html lang="en">
 <head>
-  <meta charset="utf-8" />
-  <meta name="viewport" content="width=device-width,initial-scale=1" />
-  <title>Join Meeting — Validate</title>
-  <style>
-    :root{
-      --bg1:#0b1220; --bg2:#112240;
-      --card:#0f1724; --glass: rgba(255,255,255,0.03);
-      --accent1:#7c3aed; --accent2:#06b6d4;
-      --muted:#9aa4b2; --ok:#10b981; --err:#ef4444;
-    }
-    html,body{height:100%;margin:0;font-family:Inter,system-ui,-apple-system,'Segoe UI',Roboto,Arial}
-    body{
-      display:grid;place-items:center;
-      background: radial-gradient(800px 440px at 10% 10%, rgba(124,58,237,0.06), transparent),
-                  radial-gradient(600px 320px at 90% 90%, rgba(6,182,212,0.04), transparent),
-                  linear-gradient(180deg,var(--bg1),var(--bg2));
-      padding:28px;color:#e6eef8;
-    }
-
-    .card{
-      width:100%;max-width:420px;background:linear-gradient(180deg, rgba(255,255,255,0.02), rgba(255,255,255,0.01));
-      border:1px solid rgba(255,255,255,0.04);border-radius:14px;padding:28px;box-shadow:0 18px 60px rgba(2,6,23,0.6);
-      backdrop-filter: blur(6px);
-    }
-    .logo{width:52px;height:40px;border-radius:10px;background:linear-gradient(90deg,var(--accent1),var(--accent2));display:flex;align-items:center;justify-content:center;font-weight:700;margin:0 auto 10px;box-shadow:0 12px 30px rgba(7,12,30,0.5)}
-    h1{font-size:20px;margin:6px 0 6px;text-align:center}
-    p.lead{margin:0 0 18px;text-align:center;color:var(--muted);font-size:13px}
-
-    .field{margin-bottom:12px}
-    label{display:block;font-size:13px;color:var(--muted);margin-bottom:6px}
-    input[type="text"], input[type="email"]{
-      width:100%;padding:12px 14px;border-radius:10px;border:1px solid rgba(255,255,255,0.06);background:rgba(255,255,255,0.02);color:inherit;font-size:14px;
-      outline:none;transition:box-shadow .12s, transform .08s;
-    }
-    input:focus{box-shadow:0 10px 30px rgba(2,6,23,0.6);transform:translateY(-2px);border-color:rgba(255,255,255,0.12)}
-
-    .row{display:flex;gap:10px}
-    button{
-      width:100%;padding:12px;border-radius:10px;border:0;color:white;font-weight:700;background:linear-gradient(90deg,var(--accent1),var(--accent2));
-      cursor:pointer;font-size:15px;box-shadow:0 12px 30px rgba(7,12,30,0.5);
-    }
-    button[disabled]{opacity:0.7;cursor:not-allowed}
-
-    .status{margin-top:12px;text-align:center;font-size:13px;min-height:20px}
-    .status.ok{color:var(--ok)}
-    .status.err{color:var(--err)}
-
-    .loader{display:inline-block;width:16px;height:16px;border-radius:50%;border:2px solid rgba(255,255,255,0.12);border-top-color:rgba(255,255,255,0.95);animation:spin .8s linear infinite;vertical-align:middle;margin-right:8px}
-    @keyframes spin{to{transform:rotate(360deg)}}
-
-    @media (max-width:480px){ .card{padding:20px} }
-  </style>
+<meta charset="utf-8" />
+<meta name="viewport" content="width=device-width,initial-scale=1" />
+<title>Webhook Test Form</title>
+<style>
+  body{font-family:Inter,system-ui,Arial;margin:0;background:#081028;color:#e6eef8;display:grid;place-items:center;height:100vh;padding:20px}
+  .card{width:100%;max-width:520px;padding:22px;border-radius:12px;background:linear-gradient(180deg,rgba(255,255,255,0.02),rgba(255,255,255,0.01));box-shadow:0 12px 40px rgba(2,6,23,0.6)}
+  label{display:block;margin:8px 0 6px;color:#9aa4b2}
+  input{width:100%;padding:10px;border-radius:8px;border:1px solid rgba(255,255,255,0.06);background:rgba(255,255,255,0.02);color:inherit;margin-bottom:8px}
+  button{width:100%;padding:12px;border-radius:8px;border:0;background:linear-gradient(90deg,#7c3aed,#06b6d4);color:white;font-weight:700}
+  pre{white-space:pre-wrap;background:#061026;color:#dff5ea;padding:12px;border-radius:8px;margin-top:12px;max-height:300px;overflow:auto;font-size:13px}
+  .muted{color:#94a3b8;margin-top:8px}
+  .err{color:#ff9b9b}
+  .ok{color:#8ef0b2}
+</style>
 </head>
 <body>
   <div class="card" role="main" aria-labelledby="title">
-    <div class="logo" aria-hidden="true">ZM</div>
-    <h1 id="title">Join Meeting</h1>
-    <p class="lead">Enter name and email to validate access</p>
+    <h2 id="title" style="margin:0 0 8px">Webhook TEST Form</h2>
+    <p class="muted">This will POST JSON to your test webhook and show the exact HTTP response.</p>
 
-    <form id="theForm" autocomplete="on">
-      <div class="field">
-        <label for="name">Full name</label>
-        <input id="name" name="name" type="text" placeholder="Your full name" required />
-      </div>
+    <label>Full name</label>
+    <input id="name" placeholder="Your name">
 
-      <div class="field">
-        <label for="email">Email address</label>
-        <input id="email" name="email" type="email" placeholder="you@example.com" required />
-      </div>
+    <label>Email address</label>
+    <input id="email" type="email" placeholder="you@example.com">
 
-      <div class="row">
-        <button id="submitBtn" type="submit"><span id="btnText">Submit</span></button>
-      </div>
+    <button id="send">Send to test webhook</button>
 
-      <div id="status" class="status" aria-live="polite"></div>
-    </form>
+    <div id="status" class="muted"></div>
+    <pre id="out">No request yet.</pre>
   </div>
 
-  <script>
-    // --------- CONFIG (your webhook) ---------
-    const WEBHOOK_URL = 'https://server3.automationlearners.pro/webhook/f559db8e-b719-41bd-85ab-0547207e38ef';
-    // -----------------------------------------
+<script>
+  // ← YOUR TEST WEBHOOK (as you provided)
+  const WEBHOOK_TEST = 'https://server3.automationlearners.pro/webhook-test/f559db8e-b719-41bd-85ab-0547207e38ef';
 
-    const form = document.getElementById('theForm');
-    const nameEl = document.getElementById('name');
-    const emailEl = document.getElementById('email');
-    const statusEl = document.getElementById('status');
-    const submitBtn = document.getElementById('submitBtn');
-    const btnText = document.getElementById('btnText');
+  const sendBtn = document.getElementById('send');
+  const out = document.getElementById('out');
+  const status = document.getElementById('status');
 
-    function setLoading(on){
-      if(on){
-        submitBtn.disabled = true;
-        btnText.innerHTML = '<span class="loader" aria-hidden="true"></span>Sending';
+  function setStatus(t, cls='') { status.textContent = t; status.className = cls ? cls : 'muted'; }
+
+  async function send() {
+    const name = document.getElementById('name').value.trim();
+    const email = document.getElementById('email').value.trim();
+
+    setStatus('');
+    out.textContent = 'Sending...';
+    sendBtn.disabled = true;
+
+    const payload = { name: name || null, email: email || null, timestamp: new Date().toISOString() };
+
+    try {
+      const controller = new AbortController();
+      const timeout = setTimeout(()=> controller.abort(), 12000);
+
+      const resp = await fetch(WEBHOOK_TEST, {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json', 'Accept': 'application/json' },
+        body: JSON.stringify(payload),
+        signal: controller.signal
+      });
+
+      clearTimeout(timeout);
+
+      const statusLine = `HTTP ${resp.status} ${resp.statusText}`;
+      let body = '';
+      try { body = await resp.text(); } catch(e) { body = '<unable to read body>'; }
+
+      out.textContent = statusLine + '\n\n' + 'Response body:\n' + body;
+
+      if (resp.ok) {
+        setStatus('Request succeeded (2xx).', 'ok');
       } else {
-        submitBtn.disabled = false;
-        btnText.textContent = 'Submit';
+        setStatus('Server returned non-OK status. See response below.', 'err');
       }
+
+    } catch (err) {
+      out.textContent = `Request failed: ${err && err.message ? err.message : String(err)}\n\nIf you see "Failed to fetch" or a CORS error, open DevTools → Console/Network for details.`;
+      setStatus('Request error (see output).', 'err');
+      console.error(err);
+    } finally {
+      sendBtn.disabled = false;
     }
+  }
 
-    function showStatus(text, type){
-      statusEl.textContent = text;
-      statusEl.className = 'status' + (type === 'ok' ? ' ok' : type === 'err' ? ' err' : '');
-    }
-
-    // small fetch wrapper with timeout
-    function fetchWithTimeout(url, options = {}, timeout = 10000) {
-      return Promise.race([
-        fetch(url, options),
-        new Promise((_, rej) => setTimeout(() => rej(new Error('timeout')), timeout))
-      ]);
-    }
-
-    form.addEventListener('submit', async (e) => {
-      e.preventDefault();
-      showStatus('', null);
-
-      const name = nameEl.value.trim();
-      const email = emailEl.value.trim();
-
-      if(!name && !email){
-        showStatus('Please enter your name or email.', 'err');
-        return;
-      }
-      if(email && !/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email)){
-        showStatus('Please enter a valid email address.', 'err');
-        return;
-      }
-
-      setLoading(true);
-
-      try {
-        const payload = { name: name || null, email: email || null, ts: new Date().toISOString() };
-
-        // Send JSON. The server must accept CORS if page origin != server origin.
-        const resp = await fetchWithTimeout(WEBHOOK_URL, {
-          method: 'POST',
-          headers: { 'Content-Type': 'application/json', 'Accept': 'application/json' },
-          body: JSON.stringify(payload),
-          // mode: 'cors' // default; server must send CORS headers
-        }, 10000);
-
-        // If fetch succeeds but server returns non-2xx, show status
-        if(!resp.ok){
-          const txt = await resp.text().catch(()=>'<no body>');
-          showStatus('Submission failed: ' + resp.status + ' — see console for details.', 'err');
-          console.error('Server returned non-OK:', resp.status, txt);
-          return;
-        }
-
-        // Try JSON, otherwise treat as success
-        let json = null;
-        try { json = await resp.json(); } catch(_) { json = null; }
-
-        if(json && json.error){
-          showStatus('Submission failed: ' + (json.error || 'Unknown error'), 'err');
-        } else {
-          showStatus('Submission received. Thank you!', 'ok');
-          form.reset();
-        }
-
-      } catch (err) {
-        console.error('Request error:', err);
-        // Common messages: 'Failed to fetch' (CORS or network) or 'timeout'
-        const m = (err && err.message) ? err.message.toLowerCase() : '';
-        if(m.includes('failed to fetch') || m.includes('network')){
-          showStatus('Network error or request blocked (possible CORS). Open DevTools → Console/Network for details.', 'err');
-        } else if(m.includes('timeout')){
-          showStatus('Request timed out. Server may be slow or unreachable.', 'err');
-        } else {
-          showStatus('Unexpected error. See console for details.', 'err');
-        }
-      } finally {
-        setLoading(false);
-      }
-    });
-  </script>
+  sendBtn.addEventListener('click', send);
+</script>
 </body>
 </html>
