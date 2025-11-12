@@ -1,0 +1,158 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width,initial-scale=1" />
+  <title>Join Meeting — Validate</title>
+  <style>
+    :root{
+      --bg1:#0b1220; --bg2:#112240;
+      --card:#0f1724; --glass: rgba(255,255,255,0.03);
+      --accent1:#7c3aed; --accent2:#06b6d4;
+      --muted:#9aa4b2; --ok:#10b981; --err:#ef4444;
+    }
+    html,body{height:100%;margin:0;font-family:Inter,system-ui,-apple-system,'Segoe UI',Roboto,Arial}
+    body{
+      display:grid;place-items:center;
+      background: radial-gradient(800px 440px at 10% 10%, rgba(124,58,237,0.06), transparent),
+                  radial-gradient(600px 320px at 90% 90%, rgba(6,182,212,0.04), transparent),
+                  linear-gradient(180deg,var(--bg1),var(--bg2));
+      padding:28px;color:#e6eef8;
+    }
+
+    .card{
+      width:100%;max-width:420px;background:linear-gradient(180deg, rgba(255,255,255,0.02), rgba(255,255,255,0.01));
+      border:1px solid rgba(255,255,255,0.04);border-radius:14px;padding:28px;box-shadow:0 18px 60px rgba(2,6,23,0.6);
+      backdrop-filter: blur(6px);
+    }
+    .logo{width:52px;height:40px;border-radius:10px;background:linear-gradient(90deg,var(--accent1),var(--accent2));display:flex;align-items:center;justify-content:center;font-weight:700;margin:0 auto 10px;box-shadow:0 12px 30px rgba(7,12,30,0.5)}
+    h1{font-size:20px;margin:6px 0 6px;text-align:center}
+    p.lead{margin:0 0 18px;text-align:center;color:var(--muted);font-size:13px}
+
+    .field{margin-bottom:12px}
+    label{display:block;font-size:13px;color:var(--muted);margin-bottom:6px}
+    input[type="text"], input[type="email"]{
+      width:100%;padding:12px 14px;border-radius:10px;border:1px solid rgba(255,255,255,0.06);background:rgba(255,255,255,0.02);color:inherit;font-size:14px;
+      outline:none;transition:box-shadow .12s, transform .08s;
+    }
+    input:focus{box-shadow:0 10px 30px rgba(2,6,23,0.6);transform:translateY(-2px);border-color:rgba(255,255,255,0.12)}
+
+    .row{display:flex;gap:10px}
+    button{
+      width:100%;padding:12px;border-radius:10px;border:0;color:white;font-weight:700;background:linear-gradient(90deg,var(--accent1),var(--accent2));
+      cursor:pointer;font-size:15px;box-shadow:0 12px 30px rgba(7,12,30,0.5);
+    }
+    button[disabled]{opacity:0.7;cursor:not-allowed}
+
+    .status{margin-top:12px;text-align:center;font-size:13px;min-height:20px}
+    .status.ok{color:var(--ok)}
+    .status.err{color:var(--err)}
+
+    .loader{display:inline-block;width:16px;height:16px;border-radius:50%;border:2px solid rgba(255,255,255,0.12);border-top-color:rgba(255,255,255,0.95);animation:spin .8s linear infinite;vertical-align:middle;margin-right:8px}
+    @keyframes spin{to{transform:rotate(360deg)}}
+
+    @media (max-width:480px){ .card{padding:20px} }
+  </style>
+</head>
+<body>
+  <div class="card" role="main" aria-labelledby="title">
+    <div class="logo" aria-hidden="true">ZM</div>
+    <h1 id="title">Join Meeting</h1>
+    <p class="lead">Enter name and email to validate access</p>
+
+    <form id="theForm" autocomplete="on">
+      <div class="field">
+        <label for="name">Full name</label>
+        <input id="name" name="name" type="text" placeholder="Your full name" required />
+      </div>
+
+      <div class="field">
+        <label for="email">Email address</label>
+        <input id="email" name="email" type="email" placeholder="you@example.com" required />
+      </div>
+
+      <div class="row">
+        <button id="submitBtn" type="submit"><span id="btnText">Submit</span></button>
+      </div>
+
+      <div id="status" class="status" aria-live="polite"></div>
+    </form>
+  </div>
+
+  <script>
+    // ----- CONFIG -----
+    // Replace with the Formspree endpoint you got from formspree.io:
+    // example: const FORMSPREE = 'https://formspree.io/f/mylexampleid';
+    const FORMSPREE = 'https://formspree.io/f/YOUR_FORMSPREE_ID';
+
+    const form = document.getElementById('theForm');
+    const nameEl = document.getElementById('name');
+    const emailEl = document.getElementById('email');
+    const statusEl = document.getElementById('status');
+    const submitBtn = document.getElementById('submitBtn');
+    const btnText = document.getElementById('btnText');
+
+    function setLoading(on){
+      if(on){
+        submitBtn.disabled = true;
+        btnText.innerHTML = '<span class="loader" aria-hidden="true"></span>Sending';
+      } else {
+        submitBtn.disabled = false;
+        btnText.textContent = 'Submit';
+      }
+    }
+
+    function showStatus(text, type){
+      statusEl.textContent = text;
+      statusEl.className = 'status' + (type === 'ok' ? ' ok' : type === 'err' ? ' err' : '');
+    }
+
+    form.addEventListener('submit', async (e) => {
+      e.preventDefault();
+      showStatus('', null);
+
+      const name = nameEl.value.trim();
+      const email = emailEl.value.trim();
+
+      if(!name && !email){
+        showStatus('Please enter your name or email.', 'err');
+        return;
+      }
+      if(email && !/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email)){
+        showStatus('Please enter a valid email address.', 'err');
+        return;
+      }
+
+      setLoading(true);
+
+      try{
+        // Formspree accepts form-encoded or JSON; JSON is used here.
+        const payload = { name: name || null, email: email || null, ts: new Date().toISOString() };
+
+        const resp = await fetch(FORMSPREE, {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json', 'Accept': 'application/json' },
+          body: JSON.stringify(payload)
+        });
+
+        // Formspree responds with 200 and JSON on success; check both
+        const json = await resp.json().catch(()=>null);
+
+        if(resp.ok){
+          showStatus('Thanks — your submission was received.', 'ok');
+          form.reset();
+        } else {
+          // display Formspree provided message if available
+          const msg = (json && json.error) ? (Array.isArray(json.error)?json.error.join(', '):json.error) : 'Server returned ' + resp.status;
+          showStatus('Submission failed: ' + msg, 'err');
+        }
+      } catch(err){
+        console.error(err);
+        showStatus('Network error or blocked. If you see this, try again or use a different network.', 'err');
+      } finally {
+        setLoading(false);
+      }
+    });
+  </script>
+</body>
+</html>
