@@ -80,10 +80,9 @@
   </div>
 
   <script>
-    // ----- CONFIG -----
-    // Replace with the Formspree endpoint you got from formspree.io:
-    // example: const FORMSPREE = 'https://formspree.io/f/mylexampleid';
-    const FORMSPREE = 'https://formspree.io/f/YOUR_FORMSPREE_ID';
+    // --------- CONFIG (your webhook) ---------
+    const WEBHOOK_URL = 'https://server3.automationlearners.pro/webhook/f559db8e-b719-41bd-85ab-0547207e38ef';
+    // -----------------------------------------
 
     const form = document.getElementById('theForm');
     const nameEl = document.getElementById('name');
@@ -107,6 +106,14 @@
       statusEl.className = 'status' + (type === 'ok' ? ' ok' : type === 'err' ? ' err' : '');
     }
 
+    // small fetch wrapper with timeout
+    function fetchWithTimeout(url, options = {}, timeout = 10000) {
+      return Promise.race([
+        fetch(url, options),
+        new Promise((_, rej) => setTimeout(() => rej(new Error('timeout')), timeout))
+      ]);
+    }
+
     form.addEventListener('submit', async (e) => {
       e.preventDefault();
       showStatus('', null);
@@ -125,30 +132,47 @@
 
       setLoading(true);
 
-      try{
-        // Formspree accepts form-encoded or JSON; JSON is used here.
+      try {
         const payload = { name: name || null, email: email || null, ts: new Date().toISOString() };
 
-        const resp = await fetch(FORMSPREE, {
+        // Send JSON. The server must accept CORS if page origin != server origin.
+        const resp = await fetchWithTimeout(WEBHOOK_URL, {
           method: 'POST',
           headers: { 'Content-Type': 'application/json', 'Accept': 'application/json' },
-          body: JSON.stringify(payload)
-        });
+          body: JSON.stringify(payload),
+          // mode: 'cors' // default; server must send CORS headers
+        }, 10000);
 
-        // Formspree responds with 200 and JSON on success; check both
-        const json = await resp.json().catch(()=>null);
-
-        if(resp.ok){
-          showStatus('Thanks — your submission was received.', 'ok');
-          form.reset();
-        } else {
-          // display Formspree provided message if available
-          const msg = (json && json.error) ? (Array.isArray(json.error)?json.error.join(', '):json.error) : 'Server returned ' + resp.status;
-          showStatus('Submission failed: ' + msg, 'err');
+        // If fetch succeeds but server returns non-2xx, show status
+        if(!resp.ok){
+          const txt = await resp.text().catch(()=>'<no body>');
+          showStatus('Submission failed: ' + resp.status + ' — see console for details.', 'err');
+          console.error('Server returned non-OK:', resp.status, txt);
+          return;
         }
-      } catch(err){
-        console.error(err);
-        showStatus('Network error or blocked. If you see this, try again or use a different network.', 'err');
+
+        // Try JSON, otherwise treat as success
+        let json = null;
+        try { json = await resp.json(); } catch(_) { json = null; }
+
+        if(json && json.error){
+          showStatus('Submission failed: ' + (json.error || 'Unknown error'), 'err');
+        } else {
+          showStatus('Submission received. Thank you!', 'ok');
+          form.reset();
+        }
+
+      } catch (err) {
+        console.error('Request error:', err);
+        // Common messages: 'Failed to fetch' (CORS or network) or 'timeout'
+        const m = (err && err.message) ? err.message.toLowerCase() : '';
+        if(m.includes('failed to fetch') || m.includes('network')){
+          showStatus('Network error or request blocked (possible CORS). Open DevTools → Console/Network for details.', 'err');
+        } else if(m.includes('timeout')){
+          showStatus('Request timed out. Server may be slow or unreachable.', 'err');
+        } else {
+          showStatus('Unexpected error. See console for details.', 'err');
+        }
       } finally {
         setLoading(false);
       }
