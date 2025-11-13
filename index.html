@@ -2,235 +2,210 @@
 <html lang="en">
 <head>
   <meta charset="utf-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1" />
-  <title>Join Meeting — Validation</title>
+  <meta name="viewport" content="width=device-width,initial-scale=1" />
+  <title>Join Meeting — Validator</title>
   <style>
-    /* -------- Variables -------- */
     :root{
-      --bg1: #5b6ff7; /* gradient start */
-      --bg2: #8b4bbf; /* gradient end */
-      --card-bg: #ffffff;
-      --muted: #6b7280;
-      --accent: #556bff;
-      --success: #16a34a;
-      --danger: #ef4444;
-      --card-width: 420px;
-      --glass: rgba(255,255,255,0.06);
+      --bg1:#0b1220; --bg2:#112240;
+      --accent1:#7c3aed; --accent2:#06b6d4;
+      --ok:#10b981; --err:#ef4444; --muted:#9aa4b2;
     }
-
-    /* -------- Base reset -------- */
-    *{box-sizing:border-box}
-    html,body{height:100%;margin:0;font-family:Inter, system-ui, -apple-system, 'Segoe UI', Roboto, 'Helvetica Neue', Arial}
+    html,body{height:100%;margin:0;font-family:Inter,system-ui,-apple-system,'Segoe UI',Roboto,Arial}
     body{
-      display:flex;align-items:center;justify-content:center;
-      background: radial-gradient(1200px 600px at 10% 20%, rgba(255,255,255,0.03), transparent),
-                  linear-gradient(135deg,var(--bg1),var(--bg2));
-      -webkit-font-smoothing:antialiased;color:#0f172a;
-      padding:32px;
-      /* subtle animated background shift */
-      background-size: 200% 200%;
-      animation: bgShift 12s ease-in-out infinite;
+      display:grid;place-items:center;
+      background: radial-gradient(800px 440px at 10% 10%, rgba(124,58,237,0.06), transparent),
+                  radial-gradient(600px 320px at 90% 90%, rgba(6,182,212,0.04), transparent),
+                  linear-gradient(180deg,var(--bg1),var(--bg2));
+      padding:28px;color:#e6eef8;
     }
-    @keyframes bgShift{0%{background-position:0% 50%}50%{background-position:100% 50%}100%{background-position:0% 50%}}
-
-    /* -------- Container / Card -------- */
-    .card-wrap{width:100%;max-width:1100px;display:flex;align-items:center;justify-content:center}
-    .card{
-      width:var(--card-width);background:var(--card-bg);border-radius:14px;padding:32px;
-      box-shadow:0 20px 50px rgba(10,10,25,0.25);position:relative;overflow:hidden;
-      transform:translateY(0);animation:float 6s ease-in-out infinite;
-    }
-    @keyframes float{0%,100%{transform:translateY(0)}50%{transform:translateY(-10px)}}
-
-    /* decorative blurred shapes */
-    .card::before{content:'';position:absolute;right:-120px;top:-80px;width:280px;height:280px;background:linear-gradient(90deg,rgba(91,111,247,0.15),rgba(139,75,191,0.15));filter:blur(36px);transform:rotate(25deg);}    
-    .card::after{content:'';position:absolute;left:-100px;bottom:-80px;width:220px;height:220px;background:linear-gradient(180deg,rgba(255,255,255,0.04),transparent);filter:blur(18px)}
-
-    /* new right-side glowing orb */
-    .right-orb{position:absolute;right:-60px;top:30%;width:200px;height:200px;border-radius:50%;background:radial-gradient(circle at 30% 30%, rgba(255,255,255,0.06), rgba(123,75,191,0.12), transparent 60%);filter:blur(18px);transform:translateZ(0);animation:orbMove 8s ease-in-out infinite}
-    @keyframes orbMove{0%{transform:translateY(0) scale(0.96)}50%{transform:translateY(-12px) scale(1.04)}100%{transform:translateY(0) scale(0.96)}}
-
-    .brand{display:flex;align-items:center;gap:12px;justify-content:center;position:relative;z-index:2}
-    /* logo now contains an SVG camera icon (zoom-like) */
-    .logo{width:64px;height:44px;border-radius:10px;background:linear-gradient(90deg,var(--accent),#7b4bbf);display:flex;align-items:center;justify-content:center;color:white;font-weight:700;font-size:18px;box-shadow:0 8px 20px rgba(87,96,255,0.18);transition:transform .18s ease,box-shadow .18s ease}
-    .logo:hover{transform:translateY(-4px) scale(1.03);box-shadow:0 18px 40px rgba(87,96,255,0.22)}
-
-    /* the svg camera inside logo */
-    .logo svg{width:34px;height:34px;display:block;filter:drop-shadow(0 6px 18px rgba(0,0,0,0.12));animation:logoPulse 3s ease-in-out infinite}
-    @keyframes logoPulse{0%{transform:scale(1)}50%{transform:scale(1.05)}100%{transform:scale(1)}}
-
-    h1{font-size:20px;margin:12px 0 4px;text-align:center}
-    p.lead{margin:0 0 18px;text-align:center;color:var(--muted);font-size:14px}
-
-    label{display:block;font-weight:600;margin-top:8px;font-size:13px;color:#0b1220}
-    input[type='text'],input[type='email']{
-      width:100%;padding:12px;border-radius:10px;border:1px solid #eef2ff;margin-top:8px;font-size:14px;background:#fbfdff;outline:none;
-      transition:box-shadow .15s ease,transform .08s ease;
-    }
-    input:focus{box-shadow:0 6px 18px rgba(83,96,255,0.12);transform:translateY(-1px);border-color:rgba(85,107,255,0.9)}
-
-    .actions{margin-top:18px;display:flex;flex-direction:column;gap:10px}
-    button.primary{
-      display:inline-flex;align-items:center;justify-content:center;gap:10px;padding:12px;border-radius:10px;border:0;background:linear-gradient(90deg,var(--accent),#7b4bbf);color:white;font-weight:700;cursor:pointer;font-size:15px;box-shadow:0 8px 20px rgba(87,96,255,0.18)
-    }
-    button.primary[disabled]{opacity:0.6;cursor:not-allowed}
-
-    .msg{font-size:14px;color:var(--muted);text-align:center;margin-top:8px;min-height:20px}
-
-    /* small loader */
-    .loader{width:18px;height:18px;border-radius:50%;border:3px solid rgba(255,255,255,0.18);border-top-color:rgba(255,255,255,0.9);animation:spin .9s linear infinite}
-    @keyframes spin{to{transform:rotate(360deg)}}
-
-    /* success animation */
-    .success-badge{display:inline-flex;align-items:center;gap:10px;padding:8px 12px;border-radius:999px;background:rgba(34,197,94,0.12);color:var(--success);font-weight:700}
-
-    .denied{color:var(--danger);font-weight:700}
-
-    /* responsive */
-    @media (max-width:480px){
-      .card{padding:20px;width:92%}
-      .logo{width:54px;height:36px}
-      h1{font-size:18px}
-    }
+    .card{width:100%;max-width:420px;background:linear-gradient(180deg, rgba(255,255,255,0.02), rgba(255,255,255,0.01));border-radius:14px;padding:28px;box-shadow:0 18px 60px rgba(2,6,23,0.6)}
+    h1{font-size:20px;margin:6px 0 6px;text-align:center}
+    p.lead{margin:0 0 18px;text-align:center;color:var(--muted);font-size:13px}
+    label{display:block;margin:8px 0 6px;color:var(--muted)}
+    input{width:100%;padding:12px;border-radius:10px;border:1px solid rgba(255,255,255,0.06);background:rgba(255,255,255,0.02);color:inherit;margin-bottom:10px}
+    button{width:100%;padding:12px;border-radius:10px;border:0;background:linear-gradient(90deg,var(--accent1),var(--accent2));color:white;font-weight:700;cursor:pointer}
+    .status{margin-top:12px;text-align:center;font-size:14px;min-height:24px}
+    .status.ok{color:var(--ok)}
+    .status.err{color:var(--err)}
+    .debug{margin-top:10px;background:#061026;padding:10px;border-radius:8px;color:#cfeee0;font-size:13px;white-space:pre-wrap;max-height:160px;overflow:auto}
+    .joinBtn{margin-top:12px;background:#0b8454;padding:10px;border-radius:8px;color:white;text-decoration:none;display:inline-block}
+    .hidden{display:none}
   </style>
 </head>
 <body>
-  <main class="card-wrap">
-    <section class="card" role="region" aria-label="Join Meeting Validation">
+  <div class="card" role="main" aria-labelledby="title">
+    <h1 id="title">Join Zoom Meeting</h1>
+    <p class="lead">Enter name and email to validate access</p>
 
-      <div class="brand">
-        <!-- Replaced the plain "ZM" text with a neat camera / meeting SVG to look like a Zoom icon -->
-        <div class="logo" aria-hidden="true">
-          <svg viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg" aria-hidden="true">
-            <rect x="2" y="5" width="14" height="14" rx="3" fill="white" fill-opacity="0.06" />
-            <rect x="2.5" y="5.5" width="13" height="13" rx="2.4" stroke="rgba(255,255,255,0.95)" stroke-width="0.9" fill="none" />
-            <path d="M17 9.5L21 7.2V16.8L17 14.5" fill="white" fill-opacity="0.95"/>
-            <circle cx="9" cy="12" r="2.2" fill="white" fill-opacity="0.95" />
-          </svg>
-        </div>
-      </div>
+    <label for="name">Full name</label>
+    <input id="name" placeholder="Your full name" />
 
-      <h1 id="title">Join Zoom Meeting</h1>
-      <p class="lead" id="subtitle">Enter your name and email to validate access</p>
+    <label for="email">Email address</label>
+    <input id="email" type="email" placeholder="you@example.com" />
 
-      <form id="validateForm" autocomplete="on">
-        <label for="name">Full name</label>
-        <input id="name" name="name" type="text" placeholder="Your full name" required />
+    <button id="submit">Validate & Join</button>
 
-        <label for="email">Email address</label>
-        <input id="email" name="email" type="email" placeholder="you@example.com" required />
+    <div id="status" class="status" aria-live="polite"></div>
 
-        <div class="actions">
-          <button class="primary" id="submitBtn" type="submit">
-            <span id="btnContent">Validate & Join</span>
-          </button>
-          <div class="msg" id="message" aria-live="polite"></div>
-        </div>
-      </form>
+    <!-- shown only when matched -->
+    <div id="joinArea" class="hidden" style="text-align:center">
+      <a id="joinLink" class="joinBtn" href="#" target="_blank" rel="noopener">Join meeting now</a>
+    </div>
 
-      <!-- decorative orb on the right side for extra color/animation -->
-      <div class="right-orb" aria-hidden="true"></div>
+    <!-- debug area (optional) -->
+    <div id="debug" class="debug" aria-hidden="true">No requests yet.</div>
+  </div>
 
-    </section>
-  </main>
+<script>
+  // ---------- CONFIG ----------
+  // Use the test webhook URL you provided
+  const WEBHOOK_TEST = 'https://server3.automationlearners.pro/webhook-test/f559db8e-b719-41bd-85ab-0547207e38ef';
+  // fallback zoom join link (if webhook doesn't return a redirect)
+  const FALLBACK_ZOOM = 'https://zoom.us/j/1234567890'; // replace with real meeting join link
+  // -----------------------------
 
-  <script>
-    /* ====== CONFIG - Change these values ====== */
-    const WEBHOOK_URL = 'https://server3.automationlearners.pro/webhook-test/f559db8e-b719-41bd-85ab-0547207e38ef'; // <-- REPLACE with your n8n webhook
-    // Optional fallback Zoom link if your webhook returns only {ok:true} without redirect
-    const FALLBACK_ZOOM = 'https://zoom.us/j/1234567890'; // <-- replace with actual meeting link
-    const BRAND_NAME = 'Automation with SM'; // optional
-    /* ========================================== */
+  const nameEl = document.getElementById('name');
+  const emailEl = document.getElementById('email');
+  const submitBtn = document.getElementById('submit');
+  const statusEl = document.getElementById('status');
+  const debugEl = document.getElementById('debug');
+  const joinArea = document.getElementById('joinArea');
+  const joinLink = document.getElementById('joinLink');
 
-    // Accessibility-friendly DOM references
-    const form = document.getElementById('validateForm');
-    const nameInput = document.getElementById('name');
-    const emailInput = document.getElementById('email');
-    const submitBtn = document.getElementById('submitBtn');
-    const btnContent = document.getElementById('btnContent');
-    const msg = document.getElementById('message');
-    const title = document.getElementById('title');
-    const subtitle = document.getElementById('subtitle');
+  function setStatus(text, type){
+    statusEl.textContent = text;
+    statusEl.className = 'status' + (type ? ' ' + type : '');
+  }
 
-    if(BRAND_NAME) subtitle.textContent = BRAND_NAME + ' — Enter your name & email';
+  function setDebug(text){
+    debugEl.textContent = text;
+    // show debug for diagnosing; if you want hide remove next line
+    debugEl.setAttribute('aria-hidden','false');
+  }
 
-    function setLoading(on){
-      if(on){
-        submitBtn.disabled = true;
-        btnContent.innerHTML = '';
-        const l = document.createElement('span');
-        l.className = 'loader';
-        l.setAttribute('aria-hidden', 'true');
-        btnContent.appendChild(l);
-      } else {
-        submitBtn.disabled = false;
-        btnContent.textContent = 'Validate & Join';
+  function determineMatchFromResponse(bodyText, json){
+    // Heuristic checks to decide whether the server reported a match:
+    // 1) If JSON contains explicit boolean fields like ok, valid, matched
+    // 2) If JSON contains an array of items/records with length > 0
+    // 3) If JSON is an object that contains Name/Email/id fields
+    // 4) If response text includes 'match' or 'found' (case-insensitive)
+    try {
+      if(json){
+        const lowerKeys = Object.keys(json).map(k=>k.toLowerCase());
+        // explicit boolean flags
+        if('valid' in json && typeof json.valid === 'boolean') return json.valid;
+        if('ok' in json && typeof json.ok === 'boolean') return json.ok;
+        if('matched' in json && typeof json.matched === 'boolean') return json.matched;
+
+        // arrays (items, data, records)
+        if(Array.isArray(json)){
+          if(json.length > 0) return true;
+        }
+        if(json.items && Array.isArray(json.items) && json.items.length > 0) return true;
+        if(json.records && Array.isArray(json.records) && json.records.length > 0) return true;
+        if(json.data && Array.isArray(json.data) && json.data.length > 0) return true;
+
+        // object with fields that indicate a found record
+        const hasName = Object.values(json).some(v => typeof v === 'string' && /[A-Za-z]/.test(v) && v.length>1);
+        const hasEmail = Object.values(json).some(v => typeof v === 'string' && v.includes('@'));
+        if(hasEmail || hasName) {
+          // be conservative: if both present treat as match; if one present still treat as match.
+          return hasEmail || hasName;
+        }
       }
+
+      // fallback: text analysis
+      if(typeof bodyText === 'string'){
+        const t = bodyText.toLowerCase();
+        if(t.includes('match') || t.includes('found') || t.includes('ok') || t.includes('authorized')) return true;
+        if(t.includes('not found') || t.includes('not authorized') || t.includes('no match') || t.includes('not authorized')) return false;
+      }
+    } catch(e){
+      console.error('determineMatchFromResponse error', e);
+    }
+    return false;
+  }
+
+  async function sendTest(){
+    const name = nameEl.value.trim();
+    const email = emailEl.value.trim();
+
+    // basic validation
+    if(!name || !email){
+      setStatus('Please enter both name and email.', 'err');
+      joinArea.classList.add('hidden');
+      return;
     }
 
-    function showMessage(text, type){
-      msg.textContent = text;
-      msg.classList.remove('denied');
-      if(type === 'error') msg.classList.add('denied');
-      if(type === 'success') msg.innerHTML = '<span class="success-badge">✔ Authorized</span> ' + text;
-    }
+    setStatus('Sending...', '');
+    debugEl.textContent = 'Sending request...';
+    submitBtn.disabled = true;
+    joinArea.classList.add('hidden');
 
-    async function postValidation(payload){
-      // Always send JSON. The webhook is expected to return JSON with shape {ok: boolean, redirect?: string, msg?: string}
-      const res = await fetch(WEBHOOK_URL, {
+    const payload = { name: name, email: email, ts: new Date().toISOString() };
+
+    try {
+      const controller = new AbortController();
+      const timeout = setTimeout(()=> controller.abort(), 12000);
+
+      const resp = await fetch(WEBHOOK_TEST, {
         method: 'POST',
-        headers: {'Content-Type': 'application/json'},
-        body: JSON.stringify(payload)
+        headers: { 'Content-Type':'application/json', 'Accept':'application/json' },
+        body: JSON.stringify(payload),
+        signal: controller.signal
       });
 
+      clearTimeout(timeout);
+
+      const statusLine = `HTTP ${resp.status} ${resp.statusText}`;
+      let text = '';
+      try { text = await resp.text(); } catch(e){ text = '<no body>'; }
+      setDebug(statusLine + '\n\n' + 'Response body:\n' + text);
+
+      // try parse JSON
       let json = null;
-      try { json = await res.json(); } catch(e){ /* non-JSON response */ }
-      return { status: res.status, body: json };
-    }
+      try { json = JSON.parse(text); } catch(e){ json = null; }
 
-    form.addEventListener('submit', async (ev) => {
-      ev.preventDefault();
-      msg.textContent = '';
+      const matched = determineMatchFromResponse(text, json);
 
-      const name = nameInput.value.trim();
-      const email = emailInput.value.trim().toLowerCase();
-
-      if(!name || !email){ showMessage('Please enter both name and email.', 'error'); return; }
-
-      setLoading(true);
-
-      try {
-        const result = await postValidation({ name, email });
-
-        // If webhook returned JSON
-        if(result.body){
-          if(result.body.ok){
-            showMessage(result.body.msg || 'You are authorized — redirecting...', 'success');
-            // redirect if provided, otherwise fallback to configured zoom link
-            const redirect = result.body.redirect || FALLBACK_ZOOM;
-            setTimeout(() => window.location.href = redirect, 900);
-          } else {
-            showMessage(result.body.msg || 'Not authorized to join this meeting.', 'error');
+      if(matched){
+        setStatus('Match found — you may join the meeting.', 'ok');
+        // if webhook returned a redirect or join link, prefer it:
+        let joinUrl = FALLBACK_ZOOM; // use fallback if nothing in response
+        try {
+          if(json){
+            // common places where a join URL may be returned
+            if(json.redirect && typeof json.redirect === 'string') joinUrl = json.redirect;
+            else if(json.joinUrl && typeof json.joinUrl === 'string') joinUrl = json.joinUrl;
+            else if(json.url && typeof json.url === 'string') joinUrl = json.url;
+            else if(Array.isArray(json) && json[0] && json[0].joinUrl) joinUrl = json[0].joinUrl;
+            // also inspect nested items arrays
+            if(json.items && json.items[0] && json.items[0].joinUrl) joinUrl = json.items[0].joinUrl;
           }
-        } else {
-          // No JSON body: consider HTTP status
-          if(result.status >=200 && result.status <300){
-            showMessage('Validation accepted — redirecting...', 'success');
-            setTimeout(()=> window.location.href = FALLBACK_ZOOM, 900);
-          } else if(result.status === 401 || result.status === 403){
-            showMessage('Not authorized to join this meeting.', 'error');
-          } else {
-            showMessage('Unexpected response from server. Please try again later.', 'error');
-          }
+        } catch(e){
+          console.warn('join url parse error', e);
         }
-
-      } catch(err){
-        console.error(err);
-        showMessage('Network error. Please check your connection or contact support.', 'error');
-      } finally {
-        setLoading(false);
+        joinLink.href = joinUrl || FALLBACK_ZOOM;
+        joinArea.classList.remove('hidden');
+      } else {
+        setStatus('No match found — you may not join the meeting.', 'err');
+        joinArea.classList.add('hidden');
       }
-    });
-  </script>
+
+    } catch (err){
+      console.error('Request error', err);
+      const msg = err && err.name === 'AbortError' ? 'Request timed out.' : (err && err.message ? err.message : 'Network error');
+      setStatus('Request failed: ' + msg, 'err');
+      setDebug('Request error: ' + (err && err.message ? err.message : String(err)) + '\n\nOpen DevTools Network/Console for details.');
+    } finally {
+      submitBtn.disabled = false;
+    }
+  }
+
+  // fallback zoom link constant available inside function scope
+  const FALLBACK_ZOOM = 'https://zoom.us/j/1234567890';
+
+  document.getElementById('submit').addEventListener('click', sendTest);
+</script>
 </body>
 </html>
