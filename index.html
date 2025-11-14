@@ -3,274 +3,237 @@
 <head>
   <meta charset="utf-8" />
   <meta name="viewport" content="width=device-width,initial-scale=1" />
-  <title>Join Zoom Meeting — Validate</title>
-
+  <title>Join Zoom — Automation with SAKIB</title>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;600;700;800&display=swap" rel="stylesheet">
   <style>
     :root{
-      --bg1:#6b8cff; /* gradient */
-      --bg2:#7a4bbd;
-      --card-bg: #ffffff;
-      --accent: #5e6cff;
-      --success: #28a745;
-      --danger: #dc3545;
-      --muted: #7b7b7b;
-      --radius: 14px;
-      font-family: Inter, ui-sans-serif, system-ui, -apple-system, "Segoe UI", Roboto, "Helvetica Neue", Arial;
+      --bg1:#3257ff; --bg2:#8b4ccd;
+      --card:#ffffff; --muted:#6b7280;
+      --accent-a:#6673ff; --accent-b:#8b4ccd;
+      --success:#16a34a;
+      font-family:Inter,system-ui,-apple-system,"Segoe UI",Roboto,Arial;
     }
-    html,body{height:100%; margin:0;}
+    *{box-sizing:border-box}
+    html,body{height:100%;margin:0}
     body{
-      background: linear-gradient(135deg,var(--bg1),var(--bg2));
-      display:flex;
-      align-items:center;
-      justify-content:center;
-      padding:40px;
+      background: radial-gradient(800px 400px at 10% 20%, rgba(255,255,255,0.04), transparent 6%), linear-gradient(135deg,var(--bg1),var(--bg2));
+      display:flex;align-items:center;justify-content:center;padding:36px;color:#0b1220;
+      -webkit-font-smoothing:antialiased;
     }
 
-    .wrap{
-      width:100%;
-      max-width:680px;
-    }
+    /* layout */
+    .stage{width:100%;max-width:1100px;display:grid;grid-template-columns:1fr 520px;gap:36px;align-items:center}
+    @media (max-width:980px){.stage{grid-template-columns:1fr;padding:12px}}
 
-    .card{
-      background: var(--card-bg);
-      border-radius: var(--radius);
-      box-shadow: 0 18px 40px rgba(10,12,40,0.25);
-      padding:48px;
-      position:relative;
-      overflow:visible;
-      transform-origin:center;
-      animation:pop .45s cubic-bezier(.22,.9,.31,1);
+    /* left showcase: minimal, no tech notes */
+    .showcase{
+      padding:40px;border-radius:18px;background:linear-gradient(180deg, rgba(255,255,255,0.02), rgba(255,255,255,0.01));
+      box-shadow:0 28px 60px rgba(8,12,35,0.12); color:#fff; position:relative; overflow:hidden; min-height:420px;
     }
-    @keyframes pop{
-      from{transform:translateY(18px) scale(.995); opacity:0}
-      to{transform:none; opacity:1}
-    }
+    .blob{position:absolute;right:-80px;top:-60px;width:520px;height:520px;border-radius:50%;background:linear-gradient(120deg, rgba(255,255,255,0.06), rgba(255,255,255,0.02));filter:blur(40px);transform:rotate(12deg);opacity:.95;animation:blobFloat 12s ease-in-out infinite}
+    @keyframes blobFloat{0%{transform:translateY(0) rotate(0)}50%{transform:translateY(-18px) rotate(12deg)}100%{transform:translateY(0) rotate(0)}}
+    .accentBadge{display:inline-flex;align-items:center;gap:10px;padding:10px 12px;border-radius:12px;background:linear-gradient(90deg, rgba(255,255,255,0.03), rgba(255,255,255,0.02));margin-bottom:16px}
+    .accentBadge .dot{width:44px;height:34px;border-radius:8px;background:linear-gradient(180deg,var(--accent-a),var(--accent-b));display:flex;align-items:center;justify-content:center;font-weight:700;color:#fff}
+    .heroTitle{font-size:36px;line-height:1.02;margin:6px 0 10px;font-weight:700}
+    .heroSub{color:rgba(255,255,255,0.92);font-size:15px;margin-bottom:20px}
+    /* minimal decorative perks (no technical text) */
+    .perkGrid{display:grid;gap:12px;margin-top:14px}
+    .perkCard{display:flex;gap:12px;align-items:center;padding:12px;border-radius:12px;background:rgba(255,255,255,0.02)}
+    .perkCard svg{width:36px;height:36px;flex:0 0 36px}
+    .perkCard strong{display:block}
+    .perkCard small{display:block;color:rgba(255,255,255,0.9);font-size:13px}
 
-    .logo{
-      width:64px;height:40px;margin:0 auto 18px; display:flex;align-items:center;justify-content:center;border-radius:10px;
-      background: linear-gradient(180deg,#2fa3ff,#1672ff); box-shadow: 0 6px 18px rgba(41,112,255,0.18);
-    }
+    /* form card (right) */
+    .card{background:var(--card);border-radius:14px;padding:28px;box-shadow:0 26px 60px rgba(8,12,35,0.12);border:1px solid rgba(12,18,45,0.03)}
+    .brand{display:flex;gap:12px;align-items:center;margin-bottom:8px}
+    .logo{width:56px;height:44px;border-radius:12px;background:linear-gradient(180deg,var(--accent-a),var(--accent-b));display:flex;align-items:center;justify-content:center;color:#fff;font-weight:800;font-size:20px;box-shadow:0 10px 28px rgba(86,92,255,0.12)}
+    h1{margin:0;font-size:20px}
+    .sub{color:var(--accent-b);font-weight:700;margin-top:4px;font-size:13px}
+    .lead{color:var(--muted);margin:12px 0 18px;font-size:14px}
 
-    h1{
-      margin:0 0 6px; text-align:center; font-size:28px; letter-spacing: -0.4px;
+    form{margin-top:6px}
+    .field{position:relative;margin-bottom:18px}
+    .field input{
+      width:100%;padding:14px 44px 14px 14px;border-radius:10px;border:1px solid #eef2ff;background:linear-gradient(180deg,#fbfdff,#fff);font-size:15px;transition:box-shadow .14s,transform .12s;
     }
-    .sub{display:block;text-align:center;color:var(--accent); margin-bottom:18px; font-weight:600;}
-    p.lead{color:var(--muted); text-align:center; margin-top:0; margin-bottom:26px;}
+    .field label{position:absolute;left:14px;top:14px;color:#7b8794;font-size:13px;pointer-events:none;transition:transform .14s, font-size .14s, top .14s, color .14s}
+    .field input:focus + label, .field input.not-empty + label{transform:translateY(-10px) scale(.92); font-size:12px; top:6px; color:var(--accent-b)}
+    .field .iconWrap{position:absolute;right:12px;top:50%;transform:translateY(-50%);width:36px;height:36px;border-radius:8px;display:flex;align-items:center;justify-content:center;background:transparent}
+    .underline{position:absolute;left:12px;right:12px;bottom:8px;height:3px;border-radius:6px;background:linear-gradient(90deg, rgba(102,115,255,0.14), rgba(139,76,205,0.12));overflow:hidden}
+    .underline::after{content:'';position:absolute;left:0;top:0;bottom:0;width:0%;background:linear-gradient(90deg,var(--accent-a),var(--accent-b));transition:width .28s;border-radius:6px}
+    .field input:focus ~ .underline::after, .field input.not-empty ~ .underline::after{width:100%}
 
-    form{
-      display:block;
-      margin-top:6px;
-    }
+    .btn{margin-top:6px;width:100%;padding:12px 14px;border-radius:10px;border:none;color:#fff;font-weight:800;background:linear-gradient(90deg,var(--accent-a),var(--accent-b));box-shadow:0 14px 30px rgba(86,92,255,0.12);cursor:pointer;transition:transform .12s,box-shadow .12s;display:flex;align-items:center;justify-content:center;gap:10px}
+    .btn:hover{transform:translateY(-3px);box-shadow:0 18px 36px rgba(86,92,255,0.16)}
+    .btn[disabled]{opacity:.75;cursor:default}
 
-    .field{
-      margin-bottom:16px;
-    }
-    label{
-      display:block; font-size:13px; color:#444; margin-bottom:8px;
-    }
-    input[type="text"], input[type="email"]{
-      width:100%;
-      padding:14px 16px;
-      border-radius:10px;
-      border:1px solid #e6e6e6;
-      font-size:15px;
-      box-sizing:border-box;
-      transition:box-shadow .18s, border-color .18s, transform .12s;
-      background: #fbfdff;
-    }
-    input:focus{ outline:none; border-color: rgba(94,108,255,0.9); box-shadow: 0 8px 20px rgba(94,108,255,0.08); transform:translateY(-1px);}
+    .muted{color:var(--muted);font-size:13px;margin-top:12px;text-align:center}
+    .success-card{margin-top:14px;padding:16px;border-radius:10px;border:1px solid rgba(22,160,80,0.12);background:linear-gradient(180deg, rgba(22,160,80,0.03), rgba(255,255,255,0.01))}
+    .success-card a{display:inline-block;margin-top:10px;padding:10px 14px;border-radius:10px;background:#fff;color:var(--accent-b);text-decoration:none;font-weight:700}
 
-    .btn{
-      width:100%;
-      padding:14px 18px;
-      border-radius:10px;
-      background: linear-gradient(90deg,#6673ff,#8b4ccd);
-      color:white; font-weight:700; border:none; cursor:pointer; font-size:15px;
-      box-shadow: 0 8px 22px rgba(103,84,255,0.18);
-      transition:transform .12s, box-shadow .12s, opacity .12s;
-    }
-    .btn:active{ transform:translateY(1px) scale(.999); }
-    .btn[disabled]{ opacity:.7; cursor:default; }
-
-    .note{
-      margin-top:16px; text-align:center; color:var(--muted); font-size:13px;
-    }
-
-    /* alert boxes */
-    .alert{
-      border-radius:10px; padding:18px; margin-top:18px; border:2px solid rgba(0,0,0,0.04);
-      display:flex; gap:12px; align-items:flex-start;
-    }
-    .alert.success{ background: rgba(40,167,69,0.06); border-color: rgba(40,167,69,0.22); color: #0b6f3a;}
-    .alert.fail{ background: rgba(220,53,69,0.04); border-color: rgba(220,53,69,0.17); color: #842029;}
-
-    .alert .icon{
-      width:34px; height:34px; border-radius:8px; display:flex;align-items:center;justify-content:center;
-    }
-
-    .actions{
-      margin-top:18px; display:flex; gap:12px; align-items:center; justify-content:center;
-    }
-
-    /* loader */
-    .spinner{
-      width:18px;height:18px;border-radius:50%;
-      border:3px solid rgba(255,255,255,0.25);
-      border-top-color: rgba(255,255,255,0.9);
-      animation:spin .9s linear infinite;
-      display:inline-block; vertical-align:middle;
-    }
-    @keyframes spin{ to {transform:rotate(360deg)} }
-
-    /* small responsive */
-    @media (max-width:520px){
-      .card{ padding:28px; border-radius:12px; }
-    }
+    #confettiCanvas{position:fixed;left:0;top:0;width:100%;height:100%;pointer-events:none;z-index:9999}
+    @media (max-width:560px){ .stage{grid-template-columns:1fr} .card{width:94vw} }
   </style>
 </head>
 <body>
-  <div class="wrap">
-    <div class="card" id="card">
-      <div class="logo" aria-hidden>
-        <!-- camera icon -->
-        <svg width="26" height="18" viewBox="0 0 24 16" fill="none" xmlns="http://www.w3.org/2000/svg">
-          <rect x="0.5" y="1.5" width="14.5" height="13" rx="3" fill="#fff" opacity="0.06"/>
-          <path d="M1 4c0-1.1.9-2 2-2h8c1.1 0 2 .9 2 2v8c0 1.1-.9 2-2 2H3c-1.1 0-2-.9-2-2V4z" fill="#fff" opacity="0.12"/>
-        </svg>
+  <canvas id="confettiCanvas"></canvas>
+
+  <div class="stage">
+    <!-- LEFT: minimal showcase -->
+    <div class="showcase">
+      <div class="blob" aria-hidden></div>
+      <div class="tiny" aria-hidden></div>
+
+      <div class="accentBadge">
+        <div class="dot">Z</div>
+        <div>
+          <div style="font-weight:700">Automation with SAKIB</div>
+          <div style="font-size:13px;color:rgba(255,255,255,0.9)">Premium meeting access</div>
+        </div>
       </div>
 
-      <h1>Join Zoom Meeting</h1>
-      <span class="sub">Automation Learners BD</span>
-      <p class="lead">Enter your name and email to validate and get meeting access</p>
+      <h2 class="heroTitle">Fast, secure validation for every meeting</h2>
+      <div class="heroSub">Validate attendee access simply and beautifully — instant UI feedback with a premium look.</div>
 
-      <form id="joinForm" autocomplete="off">
+      <div class="perkGrid" aria-hidden>
+        <div class="perkCard">
+          <!-- premium SVG check icon -->
+          <svg viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg"><rect x="0" y="0" width="24" height="24" rx="6" fill="rgba(255,255,255,0.03)"/><path d="M7 12.5l2.5 2.5L17 8" stroke="white" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"/></svg>
+          <div><strong>Trusted attendees</strong><small>Only validated users will be allowed to join.</small></div>
+        </div>
+
+        <div class="perkCard">
+          <svg viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg"><rect width="24" height="24" rx="6" fill="rgba(255,255,255,0.03)"/><path d="M12 6v6l3 3" stroke="white" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"/></svg>
+          <div><strong>Instant feedback</strong><small>Clear success or friendly error messages in the form.</small></div>
+        </div>
+
+        <div class="perkCard">
+          <svg viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg"><rect width="24" height="24" rx="6" fill="rgba(255,255,255,0.03)"/><path d="M7 11V8a3 3 0 0 1 6 0v3" stroke="white" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"/><rect x="5" y="11" width="14" height="9" rx="2" stroke="white" stroke-width="1.6"/></svg>
+          <div><strong>Sleek UI</strong><small>Professional design to match your brand.</small></div>
+        </div>
+      </div>
+    </div>
+
+    <!-- RIGHT: form -->
+    <div class="card" id="card">
+      <div class="brand">
+        <div class="logo">📹</div>
+        <div>
+          <h1>Join Zoom Meeting</h1>
+          <div class="sub">Automation with SAKIB</div>
+        </div>
+      </div>
+
+      <p class="lead">Enter your full name & email to validate and get meeting access</p>
+
+      <form id="joinForm" autocomplete="off" novalidate>
         <div class="field">
+          <input id="name" name="name" type="text" placeholder=" " autocomplete="name" />
           <label for="name">Full name</label>
-          <input id="name" name="name" type="text" placeholder="Your full name" required />
+          <div class="iconWrap" aria-hidden>
+            <!-- premium user icon (SVG) -->
+            <svg width="20" height="20" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg"><path d="M12 12a4 4 0 1 0 0-8 4 4 0 0 0 0 8z" stroke="#556" stroke-width="1.4" stroke-linecap="round" stroke-linejoin="round"/><path d="M20 21v-1a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v1" stroke="#556" stroke-width="1.4" stroke-linecap="round" stroke-linejoin="round"/></svg>
+          </div>
+          <div class="underline" aria-hidden></div>
         </div>
 
         <div class="field">
+          <input id="email" name="email" type="email" placeholder=" " autocomplete="email" />
           <label for="email">Email address</label>
-          <input id="email" name="email" type="email" placeholder="your.email@example.com" required />
+          <div class="iconWrap" aria-hidden>
+            <!-- premium mail icon (SVG) -->
+            <svg width="20" height="20" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg"><rect x="3" y="5" width="18" height="14" rx="2" stroke="#556" stroke-width="1.4"/><path d="M3.5 7.5l8.5 6 8.5-6" stroke="#556" stroke-width="1.4" stroke-linecap="round" stroke-linejoin="round"/></svg>
+          </div>
+          <div class="underline" aria-hidden></div>
         </div>
 
-        <button type="submit" id="submitBtn" class="btn">Validate & Join Meeting</button>
+        <button id="submitBtn" class="btn" type="submit">
+          <span id="btnText">Validate & Join Meeting</span>
+          <svg id="btnLoader" style="display:none" width="18" height="18" viewBox="0 0 24 24" fill="none"><circle cx="12" cy="12" r="10" stroke="rgba(255,255,255,0.25)" stroke-width="3"/><path d="M22 12a10 10 0 0 0-10-10" stroke="#fff" stroke-width="3" stroke-linecap="round"/></svg>
+        </button>
 
         <div id="messageArea" aria-live="polite"></div>
-        <p class="note">We respect your privacy. Your info is used only to validate meeting access.</p>
+        <p class="muted">We respect your privacy. Your info is used only to validate meeting access.</p>
       </form>
+
+      <footer class="small" style="margin-top:12px;color:#97a0b8;font-size:13px">Hosted by Automation with SAKIB</footer>
     </div>
   </div>
 
   <script>
-    // === CONFIG ===
+    // keep your webhook + zoom link
     const WEBHOOK_URL = "https://server3.automationlearners.pro/webhook-test/f559db8e-b719-41bd-85ab-0547207e38ef";
-    // If your n8n Responds with a direct HTML page, the code will replace the card with that HTML.
-    // If n8n returns JSON {status: 'success'|'fail', message: '...', html: '...', join_url: '...'}, we'll render accordingly.
+    const ZOOM_URL = "https://app.zoom.us/wc/85874649422/start?fromPWA=1";
 
     const form = document.getElementById('joinForm');
     const nameEl = document.getElementById('name');
     const emailEl = document.getElementById('email');
     const submitBtn = document.getElementById('submitBtn');
+    const btnText = document.getElementById('btnText');
+    const btnLoader = document.getElementById('btnLoader');
     const messageArea = document.getElementById('messageArea');
-    const card = document.getElementById('card');
 
-    function showAlert(type, title, text, extraHtml) {
-      const div = document.createElement('div');
-      div.className = 'alert ' + (type === 'success' ? 'success' : 'fail');
-      div.innerHTML = `
-        <div class="icon" aria-hidden>
-          ${ type === 'success' ? '&#10003;' : '&#9888;' }
-        </div>
-        <div style="flex:1">
-          <strong style="display:block;margin-bottom:6px">${title}</strong>
-          <div style="font-size:14px;color:inherit">${text || ''}</div>
-          ${extraHtml ? ('<div style="margin-top:10px">' + extraHtml + '</div>') : ''}
-        </div>
-      `;
-      messageArea.innerHTML = '';
-      messageArea.appendChild(div);
+    // floating label behaviour
+    function toggleNotEmpty(el){ if(el.value && el.value.trim().length) el.classList.add('not-empty'); else el.classList.remove('not-empty'); }
+    [nameEl, emailEl].forEach(i => { i.addEventListener('input', ()=> toggleNotEmpty(i)); toggleNotEmpty(i); });
+
+    function setLoading(on){
+      if(on){ submitBtn.setAttribute('disabled',''); btnText.style.opacity=.35; btnLoader.style.display='inline-block'; }
+      else { submitBtn.removeAttribute('disabled'); btnText.style.opacity=1; btnLoader.style.display='none'; }
     }
 
-    // helper: try to parse text as JSON if possible
-    async function parseMaybeJSON(response) {
-      const text = await response.text();
-      try { return {type:'json', data: JSON.parse(text)}; }
-      catch(e){ return {type:'text', data: text}; }
+    function showAlert(type, title, text){
+      const div = document.createElement('div'); div.className = 'alert ' + (type==='success' ? 'success' : 'fail');
+      div.innerHTML = `<div style="font-weight:800">${type==='success'?'✔':'⚠'}</div><div><strong style="display:block;margin-bottom:6px">${title}</strong><div style="font-size:14px">${text||''}</div></div>`;
+      messageArea.innerHTML = ''; messageArea.appendChild(div); div.scrollIntoView({behavior:'smooth', block:'center'});
     }
 
-    form.addEventListener('submit', async (ev) => {
-      ev.preventDefault();
-      messageArea.innerHTML = '';
-      const name = nameEl.value.trim();
-      const email = emailEl.value.trim();
+    async function parseResponse(res){
+      const text = await res.text();
+      try{ return {type:'json', data: JSON.parse(text)} } catch(e){ return {type:'text', data: text} }
+    }
 
-      // basic client validation
-      if (!name) { showAlert('fail','Please enter your name.'); nameEl.focus(); return; }
-      if (!email || !/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email)) { showAlert('fail','Please enter a valid email address.'); emailEl.focus(); return; }
+    form.addEventListener('submit', async (e)=>{
+      e.preventDefault(); messageArea.innerHTML='';
+      const name = nameEl.value.trim(); const email = emailEl.value.trim();
+      if(!name){ showAlert('fail','Please enter your full name.'); nameEl.focus(); return; }
+      if(!email || !/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email)){ showAlert('fail','Please enter a valid email address.'); emailEl.focus(); return; }
 
-      // UI state
-      submitBtn.disabled = true;
-      submitBtn.innerHTML = `<span class="spinner"></span> Validating...`;
+      setLoading(true);
+      try{
+        const res = await fetch(WEBHOOK_URL, { method:'POST', headers:{ 'Content-Type':'application/json' }, body: JSON.stringify({ name, email }) });
+        if(!res) throw new Error('No response from server');
 
-      try {
-        // Send JSON to webhook (POST). Adjust headers if your webhook expects form-encoded.
-        const res = await fetch(WEBHOOK_URL, {
-          method: 'POST',
-          headers: { 'Content-Type': 'application/json' },
-          body: JSON.stringify({ name, email })
-        });
-
-        // If the webhook returns 200+ content, attempt to parse. If it's HTML, we replace the card content.
-        if (res.ok) {
-          const maybe = await parseMaybeJSON(res);
-
-          if (maybe.type === 'text') {
-            // If the response looks like HTML, insert it into the page (replace card)
-            const text = maybe.data.trim();
-            if (text.startsWith('<') && text.includes('</')) {
-              // Replace the card with returned HTML (this lets your n8n HTML show exactly as you built it)
-              card.outerHTML = text;
-              return;
-            } else {
-              // plain text - show as info
-              showAlert('success','Response received', text);
-            }
-          } else {
-            // JSON case
-            const data = maybe.data;
-            // Typical expected shapes:
-            // { status: "success", message: "...", html: "<...>", join_url: "..." }
-            if (data.html) {
-              // show returned HTML
-              card.outerHTML = data.html;
-              return;
-            }
-            if (data.status === 'success') {
-              // show success alert and button to join if provided, or fallback to zoom link.
-              const joinLink = data.join_url || "https://app.zoom.us/wc/85874649422/start?fromPWA=1";
-              showAlert('success', 'Validation Successful!', data.message || 'Your email validated successfully!',
-                `<a href="${joinLink}" target="_blank" style="display:inline-block;padding:8px 12px;border-radius:8px;background:#fff;color:#3b49ff;text-decoration:none;font-weight:600">Click here to join the meeting →</a>`
-              );
-            } else {
-              // failed validation
-              showAlert('fail', 'Validation Failed', data.message || 'Email not found in our database');
-            }
-          }
+        const parsed = await parseResponse(res);
+        if(parsed.type === 'text'){
+          const body = parsed.data.trim();
+          if(body.startsWith('<') && body.includes('</')){ document.getElementById('card').outerHTML = body; return; }
+          showAlert('success','Response', body);
         } else {
-          // non-200 from server
-          const txt = await res.text();
-          showAlert('fail', 'Server error', 'Validation could not be completed. Try again later.');
-          console.error('Webhook error:', res.status, txt);
+          const data = parsed.data;
+          if(data.status && data.status.toLowerCase()==='success'){
+            const join = data.join_url || ZOOM_URL;
+            messageArea.innerHTML = `<div class="success-card"><strong style="color:var(--success)">Validation Successful!</strong><div style="margin-top:8px">${data.message||'Your email validated successfully!'}</div><a href="${join}" target="_blank" rel="noopener">Click here to join the meeting →</a></div>`;
+            launchConfetti();
+          } else {
+            showAlert('fail','Validation Failed', data.message || 'Email not found in our database');
+          }
         }
-      } catch (err) {
-        console.error(err);
-        showAlert('fail', 'Network error', 'Could not reach validation server. Please try again.');
-      } finally {
-        submitBtn.disabled = false;
-        submitBtn.innerHTML = 'Validate & Join Meeting';
-      }
+      } catch(err){
+        console.error(err); showAlert('fail','Network error','Could not reach validation server. If CORS blocks response, allow Access-Control-Allow-Origin on the webhook server.');
+      } finally { setLoading(false); }
     });
+
+    // confetti
+    function launchConfetti(){
+      const canvas = document.getElementById('confettiCanvas'); if(!canvas) return;
+      canvas.width = window.innerWidth; canvas.height = window.innerHeight; const ctx = canvas.getContext('2d');
+      const pieces = []; const colors=['#ffd166','#ef476f','#06d6a0','#118ab2','#ffd54f','#c084fc'];
+      for(let i=0;i<70;i++){ pieces.push({ x: Math.random()*canvas.width, y: -Math.random()*canvas.height, vx:(Math.random()-0.5)*6, vy:2+Math.random()*4, r:6+Math.random()*8, c:colors[Math.floor(Math.random()*colors.length)], rot: Math.random()*360, vr:(Math.random()-0.5)*6}); }
+      let t=0; function frame(){ ctx.clearRect(0,0,canvas.width,canvas.height); for(const p of pieces){ p.x+=p.vx; p.y+=p.vy; p.vy+=0.06; p.rot+=p.vr; ctx.save(); ctx.translate(p.x,p.y); ctx.rotate(p.rot*Math.PI/180); ctx.fillStyle=p.c; ctx.fillRect(-p.r/2, -p.r/2, p.r, p.r*0.6); ctx.restore(); } t++; if(t<220) requestAnimationFrame(frame); else ctx.clearRect(0,0,canvas.width,canvas.height); } frame();
+    }
+
+    window.addEventListener('resize', ()=>{ const c=document.getElementById('confettiCanvas'); if(c){ c.width=window.innerWidth; c.height=window.innerHeight; }});
   </script>
 </body>
 </html>
