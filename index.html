@@ -3,7 +3,7 @@
 <head>
   <meta charset="utf-8"/>
   <meta name="viewport" content="width=device-width,initial-scale=1,maximum-scale=1"/>
-  <title>Join Zoom — Automation with SAKIB</title>
+  <title>Join Meeting — Automation with SAKIB</title>
   <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800;900&display=swap" rel="stylesheet">
   <style>
     :root {
@@ -39,10 +39,6 @@
       --color-amber-500: #f59e0b;
       --color-amber-400: #fbbf24;
       
-      --shadow-glow-indigo: 0 0 40px rgba(99, 102, 241, 0.4);
-      --shadow-glow-purple: 0 0 40px rgba(168, 85, 247, 0.4);
-      --shadow-glow-pink: 0 0 40px rgba(236, 72, 153, 0.4);
-      
       font-family: 'Inter', system-ui, -apple-system, 'Segoe UI', Roboto, sans-serif;
       font-feature-settings: 'cv02', 'cv03', 'cv04', 'cv11';
       -webkit-font-smoothing: antialiased;
@@ -61,34 +57,83 @@
     }
 
     body {
-      background: radial-gradient(ellipse at top, #1e1b4b 0%, #0f0a2e 50%, #050314 100%);
+      background: #0a0118;
       color: var(--color-slate-50);
       position: relative;
     }
 
-    /* Ultra premium background */
+    /* Premium Animated Background */
     .bg-canvas {
       position: fixed;
       inset: 0;
       z-index: 0;
       pointer-events: none;
       overflow: hidden;
+      background: radial-gradient(ellipse at top, #1a0f3d 0%, #0d0721 50%, #050112 100%);
     }
 
-    .bg-mesh {
+    /* Animated gradient waves */
+    .gradient-wave {
       position: absolute;
-      inset: 0;
+      width: 200%;
+      height: 200%;
+      top: -50%;
+      left: -50%;
+      opacity: 0.4;
+      animation: waveRotate 30s linear infinite;
       background: 
-        radial-gradient(circle at 15% 20%, rgba(99, 102, 241, 0.15) 0%, transparent 40%),
-        radial-gradient(circle at 85% 30%, rgba(168, 85, 247, 0.15) 0%, transparent 40%),
-        radial-gradient(circle at 50% 80%, rgba(236, 72, 153, 0.12) 0%, transparent 40%),
-        radial-gradient(circle at 30% 60%, rgba(16, 185, 129, 0.08) 0%, transparent 35%);
-      animation: meshPulse 15s ease-in-out infinite;
+        radial-gradient(circle at 20% 30%, rgba(99, 102, 241, 0.25) 0%, transparent 30%),
+        radial-gradient(circle at 80% 50%, rgba(168, 85, 247, 0.2) 0%, transparent 35%),
+        radial-gradient(circle at 40% 70%, rgba(236, 72, 153, 0.18) 0%, transparent 32%),
+        radial-gradient(circle at 60% 20%, rgba(16, 185, 129, 0.15) 0%, transparent 28%);
     }
 
-    @keyframes meshPulse {
-      0%, 100% { opacity: 1; transform: scale(1); }
-      50% { opacity: 0.8; transform: scale(1.05); }
+    @keyframes waveRotate {
+      0% { transform: rotate(0deg) scale(1); }
+      50% { transform: rotate(180deg) scale(1.1); }
+      100% { transform: rotate(360deg) scale(1); }
+    }
+
+    /* Floating orbs */
+    .orb {
+      position: absolute;
+      border-radius: 50%;
+      filter: blur(60px);
+      opacity: 0.6;
+      animation: orbFloat 20s ease-in-out infinite;
+    }
+
+    .orb-1 {
+      width: 400px;
+      height: 400px;
+      background: radial-gradient(circle, rgba(99, 102, 241, 0.4), transparent);
+      top: 10%;
+      left: 10%;
+      animation-delay: 0s;
+    }
+
+    .orb-2 {
+      width: 350px;
+      height: 350px;
+      background: radial-gradient(circle, rgba(168, 85, 247, 0.35), transparent);
+      top: 50%;
+      right: 15%;
+      animation-delay: 7s;
+    }
+
+    .orb-3 {
+      width: 300px;
+      height: 300px;
+      background: radial-gradient(circle, rgba(236, 72, 153, 0.3), transparent);
+      bottom: 15%;
+      left: 20%;
+      animation-delay: 14s;
+    }
+
+    @keyframes orbFloat {
+      0%, 100% { transform: translate(0, 0) scale(1); }
+      33% { transform: translate(100px, -80px) scale(1.1); }
+      66% { transform: translate(-80px, 100px) scale(0.9); }
     }
 
     /* Animated grid */
@@ -96,17 +141,17 @@
       position: absolute;
       inset: 0;
       background-image: 
-        linear-gradient(rgba(99, 102, 241, 0.05) 1px, transparent 1px),
-        linear-gradient(90deg, rgba(99, 102, 241, 0.05) 1px, transparent 1px);
-      background-size: 50px 50px;
-      mask-image: radial-gradient(ellipse 80% 60% at 50% 40%, black 20%, transparent 80%);
-      -webkit-mask-image: radial-gradient(ellipse 80% 60% at 50% 40%, black 20%, transparent 80%);
+        linear-gradient(rgba(99, 102, 241, 0.08) 1px, transparent 1px),
+        linear-gradient(90deg, rgba(99, 102, 241, 0.08) 1px, transparent 1px);
+      background-size: 60px 60px;
+      mask-image: radial-gradient(ellipse 70% 50% at 50% 50%, black 30%, transparent 80%);
+      -webkit-mask-image: radial-gradient(ellipse 70% 50% at 50% 50%, black 30%, transparent 80%);
       animation: gridSlide 40s linear infinite;
     }
 
     @keyframes gridSlide {
       0% { transform: translate(0, 0); }
-      100% { transform: translate(50px, 50px); }
+      100% { transform: translate(60px, 60px); }
     }
 
     /* Premium particles */
@@ -119,41 +164,42 @@
       position: absolute;
       border-radius: 50%;
       pointer-events: none;
-      filter: blur(2px);
+      filter: blur(1px);
       opacity: 0;
-      animation: particleFloat 8s ease-in-out infinite;
+      box-shadow: 0 0 10px currentColor;
+      animation: particleFloat 12s ease-in-out infinite;
     }
 
     @keyframes particleFloat {
       0% {
         opacity: 0;
-        transform: translateY(100vh) scale(0);
+        transform: translateY(100vh) scale(0) rotate(0deg);
       }
       10% {
-        opacity: 0.6;
+        opacity: 0.8;
       }
       90% {
-        opacity: 0.6;
+        opacity: 0.8;
       }
       100% {
         opacity: 0;
-        transform: translateY(-100vh) scale(1);
+        transform: translateY(-100vh) scale(1.5) rotate(720deg);
       }
     }
 
     /* Spotlight effect */
     .spotlight {
       position: absolute;
-      width: 600px;
-      height: 600px;
+      width: 500px;
+      height: 500px;
       border-radius: 50%;
-      background: radial-gradient(circle, rgba(99, 102, 241, 0.2) 0%, transparent 70%);
-      filter: blur(60px);
+      background: radial-gradient(circle, rgba(99, 102, 241, 0.15) 0%, transparent 70%);
+      filter: blur(50px);
       pointer-events: none;
-      transition: transform 0.3s ease-out;
+      transition: transform 0.2s ease-out;
     }
 
-    /* Main container - FIXED SCALING */
+    /* Main container - SMALLER SCALE */
     .main-wrapper {
       position: relative;
       z-index: 10;
@@ -161,27 +207,29 @@
       display: flex;
       align-items: center;
       justify-content: center;
-      padding: 40px 20px;
+      padding: 30px 20px;
     }
 
     .content-grid {
       width: 100%;
-      max-width: 1240px;
+      max-width: 1050px; /* Reduced from 1240px */
       display: grid;
-      grid-template-columns: 1fr 480px;
-      gap: 48px;
+      grid-template-columns: 1fr 400px; /* Reduced from 480px */
+      gap: 40px;
       align-items: center;
+      transform: scale(0.9); /* Overall scaling */
     }
 
     @media (max-width: 1200px) {
       .content-grid {
         grid-template-columns: 1fr;
-        max-width: 520px;
-        gap: 36px;
+        max-width: 440px;
+        gap: 30px;
+        transform: scale(1);
       }
     }
 
-    /* Left hero section - BETTER SCALING */
+    /* Left hero section */
     .hero-section {
       position: relative;
     }
@@ -189,14 +237,14 @@
     .hero-badge {
       display: inline-flex;
       align-items: center;
-      gap: 12px;
-      padding: 6px 6px 6px 6px;
+      gap: 10px;
+      padding: 5px 5px 5px 5px;
       border-radius: 100px;
       background: rgba(15, 10, 46, 0.6);
       border: 1px solid rgba(99, 102, 241, 0.3);
       backdrop-filter: blur(20px);
       -webkit-backdrop-filter: blur(20px);
-      margin-bottom: 28px;
+      margin-bottom: 24px;
       position: relative;
       overflow: hidden;
       box-shadow: 
@@ -232,8 +280,8 @@
     }
 
     .badge-icon-wrapper {
-      width: 48px;
-      height: 48px;
+      width: 42px;
+      height: 42px;
       border-radius: 50%;
       background: linear-gradient(135deg, var(--color-indigo-500), var(--color-purple-500));
       display: flex;
@@ -268,18 +316,18 @@
     }
 
     .badge-text {
-      padding: 0 14px 0 4px;
+      padding: 0 12px 0 4px;
     }
 
     .badge-title {
-      font-size: 14px;
+      font-size: 13px;
       font-weight: 700;
       color: var(--color-slate-50);
       letter-spacing: -0.01em;
     }
 
     .badge-subtitle {
-      font-size: 11px;
+      font-size: 10px;
       font-weight: 600;
       color: var(--color-indigo-400);
       text-transform: uppercase;
@@ -288,11 +336,11 @@
     }
 
     .hero-title {
-      font-size: 44px;
+      font-size: 38px; /* Reduced from 44px */
       font-weight: 900;
       line-height: 1.1;
       letter-spacing: -0.03em;
-      margin-bottom: 20px;
+      margin-bottom: 18px;
       background: linear-gradient(135deg, 
         #ffffff 0%, 
         #e0e7ff 40%, 
@@ -311,12 +359,12 @@
     }
 
     .hero-subtitle {
-      font-size: 16px;
+      font-size: 15px; /* Reduced from 16px */
       line-height: 1.65;
       color: var(--color-slate-300);
       font-weight: 400;
-      margin-bottom: 40px;
-      max-width: 520px;
+      margin-bottom: 32px;
+      max-width: 480px;
       animation: fadeInUp 0.8s ease-out 0.2s both;
     }
 
@@ -331,18 +379,18 @@
       }
     }
 
-    /* Feature cards - PREMIUM ANIMATIONS */
+    /* Feature cards */
     .features-list {
       display: grid;
-      gap: 18px;
+      gap: 16px; /* Reduced from 18px */
     }
 
     .feature-card {
       position: relative;
       display: flex;
-      gap: 18px;
-      padding: 24px;
-      border-radius: 18px;
+      gap: 16px;
+      padding: 20px; /* Reduced from 24px */
+      border-radius: 16px;
       background: rgba(15, 10, 46, 0.4);
       border: 1px solid rgba(99, 102, 241, 0.2);
       backdrop-filter: blur(20px);
@@ -394,9 +442,9 @@
     }
 
     .feature-icon {
-      width: 56px;
-      height: 56px;
-      border-radius: 14px;
+      width: 50px; /* Reduced from 56px */
+      height: 50px;
+      border-radius: 12px;
       display: flex;
       align-items: center;
       justify-content: center;
@@ -413,8 +461,8 @@
     }
 
     .feature-icon svg {
-      width: 28px;
-      height: 28px;
+      width: 26px;
+      height: 26px;
       position: relative;
       z-index: 1;
       transition: transform 0.3s ease;
@@ -425,10 +473,10 @@
     }
 
     .feature-content h3 {
-      font-size: 16px;
+      font-size: 15px; /* Reduced from 16px */
       font-weight: 700;
       color: var(--color-slate-50);
-      margin-bottom: 6px;
+      margin-bottom: 5px;
       letter-spacing: -0.01em;
       transition: color 0.3s ease;
     }
@@ -438,21 +486,21 @@
     }
 
     .feature-content p {
-      font-size: 14px;
+      font-size: 13px; /* Reduced from 14px */
       line-height: 1.6;
       color: var(--color-slate-400);
       font-weight: 400;
     }
 
-    /* Right form card - OPTIMIZED SIZE */
+    /* Right form card - SMALLER */
     .form-card {
       position: relative;
       background: rgba(255, 255, 255, 0.03);
       backdrop-filter: blur(40px);
       -webkit-backdrop-filter: blur(40px);
       border: 1px solid rgba(255, 255, 255, 0.1);
-      border-radius: 28px;
-      padding: 40px;
+      border-radius: 24px; /* Reduced from 28px */
+      padding: 32px; /* Reduced from 40px */
       box-shadow: 
         0 0 0 1px rgba(255, 255, 255, 0.05) inset,
         0 40px 80px rgba(0, 0, 0, 0.5),
@@ -468,7 +516,7 @@
       top: 0;
       left: 0;
       right: 0;
-      height: 160px;
+      height: 140px;
       background: radial-gradient(ellipse 100% 80% at 50% 0%, rgba(99, 102, 241, 0.12), transparent);
       pointer-events: none;
     }
@@ -481,21 +529,21 @@
         0 24px 64px rgba(99, 102, 241, 0.3);
     }
 
-    /* Card header - BETTER PROPORTIONS */
+    /* Card header */
     .card-header {
       display: flex;
-      gap: 18px;
+      gap: 16px;
       align-items: center;
-      padding-bottom: 28px;
-      margin-bottom: 28px;
+      padding-bottom: 24px;
+      margin-bottom: 24px;
       border-bottom: 1px solid rgba(255, 255, 255, 0.08);
       position: relative;
     }
 
     .card-logo {
-      width: 64px;
-      height: 64px;
-      border-radius: 18px;
+      width: 56px; /* Reduced from 64px */
+      height: 56px;
+      border-radius: 16px;
       background: linear-gradient(135deg, var(--color-indigo-500), var(--color-purple-600));
       display: flex;
       align-items: center;
@@ -538,15 +586,15 @@
     }
 
     .card-title-group h1 {
-      font-size: 24px;
+      font-size: 22px; /* Reduced from 24px */
       font-weight: 800;
       color: var(--color-slate-50);
-      margin-bottom: 6px;
+      margin-bottom: 5px;
       letter-spacing: -0.02em;
     }
 
     .card-subtitle {
-      font-size: 12px;
+      font-size: 11px; /* Reduced from 12px */
       font-weight: 700;
       color: var(--color-indigo-400);
       text-transform: uppercase;
@@ -554,15 +602,15 @@
     }
 
     .card-description {
-      font-size: 14px;
+      font-size: 13px; /* Reduced from 14px */
       line-height: 1.6;
       color: var(--color-slate-400);
-      margin-bottom: 32px;
+      margin-bottom: 28px;
     }
 
-    /* PREMIUM FORM FIELDS - FIXED LABEL ISSUE */
+    /* FORM FIELDS - REMOVED SHADOW LINE */
     .form-group {
-      margin-bottom: 20px;
+      margin-bottom: 18px;
       position: relative;
     }
 
@@ -572,13 +620,13 @@
 
     .form-input {
       width: 100%;
-      height: 56px;
-      padding: 18px 18px 18px 56px;
-      border-radius: 14px;
+      height: 52px; /* Reduced from 56px */
+      padding: 16px 16px 16px 50px; /* Reduced padding */
+      border-radius: 12px;
       border: 2px solid rgba(99, 102, 241, 0.2);
       background: rgba(15, 10, 46, 0.4);
       color: var(--color-slate-50);
-      font-size: 15px;
+      font-size: 14px; /* Reduced from 15px */
       font-weight: 500;
       font-family: inherit;
       transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
@@ -600,51 +648,45 @@
       transform: translateY(-1px);
     }
 
-    /* FIXED LABEL POSITIONING */
+    /* FIXED LABEL - NO SHADOW LINE */
     .form-label {
       position: absolute;
-      left: 56px;
+      left: 50px;
       top: 50%;
       transform: translateY(-50%);
-      font-size: 15px;
+      font-size: 14px;
       font-weight: 500;
       color: var(--color-slate-500);
       pointer-events: none;
       transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
-      background: linear-gradient(to bottom, 
-        transparent 0%, 
-        transparent 40%, 
-        rgba(15, 10, 46, 0.9) 40%, 
-        rgba(15, 10, 46, 0.9) 60%, 
-        transparent 60%, 
-        transparent 100%);
-      padding: 0 8px;
+      background: transparent; /* Removed background gradient */
+      padding: 0 6px;
       white-space: nowrap;
     }
 
-    /* SMOOTH LABEL ANIMATION */
+    /* SMOOTH LABEL ANIMATION - NO SHADOW */
     .form-input:focus + .form-label,
     .form-input.has-value + .form-label {
       top: 0;
-      left: 14px;
-      font-size: 11px;
+      left: 12px;
+      font-size: 10px;
       font-weight: 700;
       color: var(--color-indigo-400);
       text-transform: uppercase;
       letter-spacing: 0.05em;
       background: rgba(15, 10, 46, 0.95);
-      padding: 2px 8px;
-      border-radius: 6px;
+      padding: 2px 6px;
+      border-radius: 4px;
       transform: translateY(-50%);
     }
 
     .form-icon {
       position: absolute;
-      left: 18px;
+      left: 16px;
       top: 50%;
       transform: translateY(-50%);
-      width: 22px;
-      height: 22px;
+      width: 20px;
+      height: 20px;
       display: flex;
       align-items: center;
       justify-content: center;
@@ -660,21 +702,21 @@
     }
 
     .form-icon svg {
-      width: 20px;
-      height: 20px;
+      width: 18px;
+      height: 18px;
     }
 
-    /* PREMIUM SUBMIT BUTTON WITH ANIMATIONS */
+    /* SUBMIT BUTTON */
     .submit-button {
       width: 100%;
-      height: 58px;
-      margin-top: 28px;
-      padding: 0 28px;
+      height: 52px; /* Reduced from 58px */
+      margin-top: 24px;
+      padding: 0 24px;
       border: none;
-      border-radius: 14px;
+      border-radius: 12px;
       background: linear-gradient(135deg, var(--color-indigo-600), var(--color-purple-600));
       color: white;
-      font-size: 16px;
+      font-size: 15px; /* Reduced from 16px */
       font-weight: 800;
       font-family: inherit;
       letter-spacing: -0.01em;
@@ -742,17 +784,9 @@
       transform: none;
     }
 
-    .submit-button:disabled:hover {
-      transform: none;
-      box-shadow: 
-        0 0 0 1px rgba(255, 255, 255, 0.1) inset,
-        0 10px 36px rgba(99, 102, 241, 0.4);
-    }
-
-    /* Premium spinner */
     .spinner {
-      width: 22px;
-      height: 22px;
+      width: 20px;
+      height: 20px;
       border: 3px solid rgba(255, 255, 255, 0.3);
       border-top-color: white;
       border-radius: 50%;
@@ -765,11 +799,11 @@
 
     /* Premium alerts */
     .alert {
-      margin-top: 24px;
-      padding: 20px;
-      border-radius: 16px;
+      margin-top: 20px;
+      padding: 18px;
+      border-radius: 14px;
       display: flex;
-      gap: 16px;
+      gap: 14px;
       align-items: flex-start;
       backdrop-filter: blur(20px);
       -webkit-backdrop-filter: blur(20px);
@@ -799,13 +833,13 @@
     }
 
     .alert-icon {
-      width: 44px;
-      height: 44px;
-      border-radius: 12px;
+      width: 40px;
+      height: 40px;
+      border-radius: 10px;
       display: flex;
       align-items: center;
       justify-content: center;
-      font-size: 22px;
+      font-size: 20px;
       font-weight: 700;
       flex-shrink: 0;
       box-shadow: 0 6px 20px rgba(0, 0, 0, 0.2);
@@ -834,23 +868,23 @@
 
     .alert-content strong {
       display: block;
-      font-size: 15px;
+      font-size: 14px;
       font-weight: 700;
-      margin-bottom: 6px;
+      margin-bottom: 5px;
       color: var(--color-slate-50);
     }
 
     .alert-content div {
-      font-size: 13px;
+      font-size: 12px;
       line-height: 1.6;
       color: var(--color-slate-300);
     }
 
     /* Success card */
     .success-card {
-      margin-top: 24px;
-      padding: 28px;
-      border-radius: 18px;
+      margin-top: 20px;
+      padding: 24px;
+      border-radius: 16px;
       background: linear-gradient(135deg, rgba(16, 185, 129, 0.15), rgba(16, 185, 129, 0.05));
       border: 2px solid rgba(16, 185, 129, 0.3);
       backdrop-filter: blur(20px);
@@ -861,30 +895,30 @@
     .success-title {
       display: flex;
       align-items: center;
-      gap: 10px;
-      font-size: 17px;
+      gap: 8px;
+      font-size: 16px;
       font-weight: 800;
       color: var(--color-emerald-400);
-      margin-bottom: 10px;
+      margin-bottom: 8px;
     }
 
     .success-message {
-      font-size: 14px;
+      font-size: 13px;
       line-height: 1.6;
       color: var(--color-slate-300);
-      margin-bottom: 20px;
+      margin-bottom: 18px;
     }
 
     .success-link {
       display: inline-flex;
       align-items: center;
       gap: 8px;
-      padding: 14px 24px;
-      border-radius: 12px;
+      padding: 12px 20px;
+      border-radius: 10px;
       background: linear-gradient(135deg, var(--color-indigo-500), var(--color-purple-600));
       color: white;
       text-decoration: none;
-      font-size: 15px;
+      font-size: 14px;
       font-weight: 700;
       transition: all 0.3s ease;
       box-shadow: 
@@ -901,14 +935,14 @@
 
     /* Privacy text */
     .privacy-notice {
-      margin-top: 24px;
-      padding: 18px;
-      border-radius: 12px;
+      margin-top: 20px;
+      padding: 16px;
+      border-radius: 10px;
       background: rgba(99, 102, 241, 0.05);
       border: 1px solid rgba(99, 102, 241, 0.15);
       display: flex;
       align-items: flex-start;
-      gap: 12px;
+      gap: 10px;
     }
 
     .privacy-notice svg {
@@ -918,7 +952,7 @@
     }
 
     .privacy-notice p {
-      font-size: 12px;
+      font-size: 11px;
       line-height: 1.6;
       color: var(--color-slate-400);
       margin: 0;
@@ -926,11 +960,11 @@
 
     /* Card footer */
     .card-footer {
-      margin-top: 28px;
-      padding-top: 20px;
+      margin-top: 24px;
+      padding-top: 18px;
       border-top: 1px solid rgba(255, 255, 255, 0.08);
       text-align: center;
-      font-size: 12px;
+      font-size: 11px;
       color: var(--color-slate-500);
       font-weight: 500;
     }
@@ -949,11 +983,11 @@
     /* Responsive */
     @media (max-width: 768px) {
       .hero-title {
-        font-size: 36px;
+        font-size: 32px;
       }
 
       .form-card {
-        padding: 32px 24px;
+        padding: 28px 20px;
       }
 
       .card-header {
@@ -964,20 +998,20 @@
 
     @media (max-width: 480px) {
       .main-wrapper {
-        padding: 32px 16px;
+        padding: 24px 16px;
       }
 
       .hero-title {
-        font-size: 32px;
+        font-size: 28px;
       }
 
       .form-input {
-        height: 52px;
-        padding-left: 52px;
+        height: 48px;
+        padding-left: 48px;
       }
 
       .submit-button {
-        height: 52px;
+        height: 48px;
       }
     }
 
@@ -1000,9 +1034,12 @@
   </style>
 </head>
 <body>
-  <!-- Ultra premium background -->
+  <!-- Premium Animated Background -->
   <div class="bg-canvas" aria-hidden="true">
-    <div class="bg-mesh"></div>
+    <div class="gradient-wave"></div>
+    <div class="orb orb-1"></div>
+    <div class="orb orb-2"></div>
+    <div class="orb orb-3"></div>
     <div class="grid-overlay"></div>
     <div class="particles-container" id="particlesContainer"></div>
     <div class="spotlight" id="spotlight"></div>
@@ -1015,7 +1052,7 @@
       <section class="hero-section" aria-label="Meeting benefits">
         <div class="hero-badge">
           <div class="badge-icon-wrapper" aria-hidden="true">
-            <svg width="26" height="19" viewBox="0 0 28 20" fill="none" xmlns="http://www.w3.org/2000/svg">
+            <svg width="24" height="18" viewBox="0 0 28 20" fill="none" xmlns="http://www.w3.org/2000/svg">
               <rect x="1" y="3" width="16" height="12" rx="2.5" fill="white" opacity="0.95"/>
               <path d="M22 4.5l5-3v15l-5-3z" fill="white" opacity="0.95"/>
               <circle cx="9" cy="9" r="2.8" fill="currentColor" opacity="0.4"/>
@@ -1080,14 +1117,14 @@
       <aside class="form-card" id="formCard" role="form" aria-label="Meeting join form">
         <div class="card-header">
           <div class="card-logo" aria-hidden="true">
-            <svg width="34" height="24" viewBox="0 0 36 26" fill="none" xmlns="http://www.w3.org/2000/svg">
+            <svg width="32" height="22" viewBox="0 0 36 26" fill="none" xmlns="http://www.w3.org/2000/svg">
               <rect x="2" y="4" width="20" height="16" rx="3" fill="white" opacity="0.95"/>
               <path d="M26 6l8-4v22l-8-4z" fill="white" opacity="0.95"/>
               <circle cx="12" cy="12" r="3.5" fill="currentColor" opacity="0.35"/>
             </svg>
           </div>
           <div class="card-title-group">
-            <h1>Join Zoom Meeting</h1>
+            <h1>Join Meeting</h1>
             <div class="card-subtitle">Automation with SAKIB</div>
           </div>
         </div>
@@ -1174,24 +1211,24 @@
 
   <script>
     // Configuration
-    const WEBHOOK_URL = "https://server3.automationlearners.pro/webhook-test/f559db8e-b719-41bd-85ab-0547207e38ef";
-    const ZOOM_URL = "https://app.zoom.us/wc/85874649422/start?fromPWA=1";
+    const WEBHOOK_URL = "https://server3.automationlearners.pro/webhook/f559db8e-b719-41bd-85ab-0547207e38ef";
+    const MEETING_URL = "https://app.zoom.us/wc/85874649422/start?fromPWA=1";
     const TIMEOUT_MS = 14000;
 
     // Initialize particles
     function initParticles() {
       const container = document.getElementById('particlesContainer');
-      const colors = ['#6366f1', '#a855f7', '#ec4899', '#10b981'];
+      const colors = ['#6366f1', '#a855f7', '#ec4899', '#10b981', '#f59e0b'];
       
-      for (let i = 0; i < 25; i++) {
+      for (let i = 0; i < 30; i++) {
         const particle = document.createElement('div');
         particle.className = 'particle';
         particle.style.left = Math.random() * 100 + '%';
-        particle.style.width = (Math.random() * 3 + 2) + 'px';
+        particle.style.width = (Math.random() * 4 + 2) + 'px';
         particle.style.height = particle.style.width;
         particle.style.background = colors[Math.floor(Math.random() * colors.length)];
-        particle.style.animationDelay = Math.random() * 8 + 's';
-        particle.style.animationDuration = (Math.random() * 4 + 6) + 's';
+        particle.style.animationDelay = Math.random() * 12 + 's';
+        particle.style.animationDuration = (Math.random() * 6 + 8) + 's';
         container.appendChild(particle);
       }
     }
@@ -1201,8 +1238,8 @@
     let spotlightX = 0, spotlightY = 0;
     
     document.addEventListener('mousemove', (e) => {
-      spotlightX = e.clientX - 300;
-      spotlightY = e.clientY - 300;
+      spotlightX = e.clientX - 250;
+      spotlightY = e.clientY - 250;
       spotlight.style.transform = `translate(${spotlightX}px, ${spotlightY}px)`;
     });
 
@@ -1308,7 +1345,7 @@
       const pieces = [];
       const colors = ['#6366f1', '#a855f7', '#ec4899', '#10b981', '#f59e0b', '#06b6d4'];
       
-      for (let i = 0; i < 120; i++) {
+      for (let i = 0; i < 150; i++) {
         pieces.push({
           x: Math.random() * canvas.width,
           y: -Math.random() * canvas.height * 2,
@@ -1336,7 +1373,6 @@
           ctx.translate(piece.x, piece.y);
           ctx.rotate((piece.rot * Math.PI) / 180);
           
-          // Add glow
           ctx.shadowBlur = 8;
           ctx.shadowColor = piece.c;
           
@@ -1346,7 +1382,7 @@
         }
         
         frame++;
-        if (frame < 300) {
+        if (frame < 350) {
           requestAnimationFrame(animate);
         } else {
           ctx.clearRect(0, 0, canvas.width, canvas.height);
@@ -1364,7 +1400,6 @@
       const name = nameEl.value.trim();
       const email = emailEl.value.trim();
       
-      // Validation
       if (!name) {
         showAlert('fail', 'Name Required', 'Please enter your full name to proceed.');
         nameEl.focus();
@@ -1409,7 +1444,7 @@
           const data = parsed.data;
           
           if (data.status && data.status.toLowerCase() === 'success') {
-            const joinUrl = data.join_url || ZOOM_URL;
+            const joinUrl = data.join_url || MEETING_URL;
             
             messageArea.innerHTML = `
               <div class="success-card">
@@ -1459,7 +1494,6 @@
       }
     });
 
-    // Window resize handler
     window.addEventListener('resize', () => {
       const canvas = document.getElementById('confetti');
       if (canvas) {
