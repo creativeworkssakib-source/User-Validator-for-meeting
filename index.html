@@ -1,93 +1,276 @@
 <!doctype html>
 <html lang="en">
 <head>
-<meta charset="utf-8" />
-<meta name="viewport" content="width=device-width,initial-scale=1" />
-<title>Webhook Test Form</title>
-<style>
-  body{font-family:Inter,system-ui,Arial;margin:0;background:#081028;color:#e6eef8;display:grid;place-items:center;height:100vh;padding:20px}
-  .card{width:100%;max-width:520px;padding:22px;border-radius:12px;background:linear-gradient(180deg,rgba(255,255,255,0.02),rgba(255,255,255,0.01));box-shadow:0 12px 40px rgba(2,6,23,0.6)}
-  label{display:block;margin:8px 0 6px;color:#9aa4b2}
-  input{width:100%;padding:10px;border-radius:8px;border:1px solid rgba(255,255,255,0.06);background:rgba(255,255,255,0.02);color:inherit;margin-bottom:8px}
-  button{width:100%;padding:12px;border-radius:8px;border:0;background:linear-gradient(90deg,#7c3aed,#06b6d4);color:white;font-weight:700}
-  pre{white-space:pre-wrap;background:#061026;color:#dff5ea;padding:12px;border-radius:8px;margin-top:12px;max-height:300px;overflow:auto;font-size:13px}
-  .muted{color:#94a3b8;margin-top:8px}
-  .err{color:#ff9b9b}
-  .ok{color:#8ef0b2}
-</style>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width,initial-scale=1" />
+  <title>Join Zoom Meeting — Validate</title>
+
+  <style>
+    :root{
+      --bg1:#6b8cff; /* gradient */
+      --bg2:#7a4bbd;
+      --card-bg: #ffffff;
+      --accent: #5e6cff;
+      --success: #28a745;
+      --danger: #dc3545;
+      --muted: #7b7b7b;
+      --radius: 14px;
+      font-family: Inter, ui-sans-serif, system-ui, -apple-system, "Segoe UI", Roboto, "Helvetica Neue", Arial;
+    }
+    html,body{height:100%; margin:0;}
+    body{
+      background: linear-gradient(135deg,var(--bg1),var(--bg2));
+      display:flex;
+      align-items:center;
+      justify-content:center;
+      padding:40px;
+    }
+
+    .wrap{
+      width:100%;
+      max-width:680px;
+    }
+
+    .card{
+      background: var(--card-bg);
+      border-radius: var(--radius);
+      box-shadow: 0 18px 40px rgba(10,12,40,0.25);
+      padding:48px;
+      position:relative;
+      overflow:visible;
+      transform-origin:center;
+      animation:pop .45s cubic-bezier(.22,.9,.31,1);
+    }
+    @keyframes pop{
+      from{transform:translateY(18px) scale(.995); opacity:0}
+      to{transform:none; opacity:1}
+    }
+
+    .logo{
+      width:64px;height:40px;margin:0 auto 18px; display:flex;align-items:center;justify-content:center;border-radius:10px;
+      background: linear-gradient(180deg,#2fa3ff,#1672ff); box-shadow: 0 6px 18px rgba(41,112,255,0.18);
+    }
+
+    h1{
+      margin:0 0 6px; text-align:center; font-size:28px; letter-spacing: -0.4px;
+    }
+    .sub{display:block;text-align:center;color:var(--accent); margin-bottom:18px; font-weight:600;}
+    p.lead{color:var(--muted); text-align:center; margin-top:0; margin-bottom:26px;}
+
+    form{
+      display:block;
+      margin-top:6px;
+    }
+
+    .field{
+      margin-bottom:16px;
+    }
+    label{
+      display:block; font-size:13px; color:#444; margin-bottom:8px;
+    }
+    input[type="text"], input[type="email"]{
+      width:100%;
+      padding:14px 16px;
+      border-radius:10px;
+      border:1px solid #e6e6e6;
+      font-size:15px;
+      box-sizing:border-box;
+      transition:box-shadow .18s, border-color .18s, transform .12s;
+      background: #fbfdff;
+    }
+    input:focus{ outline:none; border-color: rgba(94,108,255,0.9); box-shadow: 0 8px 20px rgba(94,108,255,0.08); transform:translateY(-1px);}
+
+    .btn{
+      width:100%;
+      padding:14px 18px;
+      border-radius:10px;
+      background: linear-gradient(90deg,#6673ff,#8b4ccd);
+      color:white; font-weight:700; border:none; cursor:pointer; font-size:15px;
+      box-shadow: 0 8px 22px rgba(103,84,255,0.18);
+      transition:transform .12s, box-shadow .12s, opacity .12s;
+    }
+    .btn:active{ transform:translateY(1px) scale(.999); }
+    .btn[disabled]{ opacity:.7; cursor:default; }
+
+    .note{
+      margin-top:16px; text-align:center; color:var(--muted); font-size:13px;
+    }
+
+    /* alert boxes */
+    .alert{
+      border-radius:10px; padding:18px; margin-top:18px; border:2px solid rgba(0,0,0,0.04);
+      display:flex; gap:12px; align-items:flex-start;
+    }
+    .alert.success{ background: rgba(40,167,69,0.06); border-color: rgba(40,167,69,0.22); color: #0b6f3a;}
+    .alert.fail{ background: rgba(220,53,69,0.04); border-color: rgba(220,53,69,0.17); color: #842029;}
+
+    .alert .icon{
+      width:34px; height:34px; border-radius:8px; display:flex;align-items:center;justify-content:center;
+    }
+
+    .actions{
+      margin-top:18px; display:flex; gap:12px; align-items:center; justify-content:center;
+    }
+
+    /* loader */
+    .spinner{
+      width:18px;height:18px;border-radius:50%;
+      border:3px solid rgba(255,255,255,0.25);
+      border-top-color: rgba(255,255,255,0.9);
+      animation:spin .9s linear infinite;
+      display:inline-block; vertical-align:middle;
+    }
+    @keyframes spin{ to {transform:rotate(360deg)} }
+
+    /* small responsive */
+    @media (max-width:520px){
+      .card{ padding:28px; border-radius:12px; }
+    }
+  </style>
 </head>
 <body>
-  <div class="card" role="main" aria-labelledby="title">
-    <h2 id="title" style="margin:0 0 8px">Webhook TEST Form</h2>
-    <p class="muted">This will POST JSON to your test webhook and show the exact HTTP response.</p>
+  <div class="wrap">
+    <div class="card" id="card">
+      <div class="logo" aria-hidden>
+        <!-- camera icon -->
+        <svg width="26" height="18" viewBox="0 0 24 16" fill="none" xmlns="http://www.w3.org/2000/svg">
+          <rect x="0.5" y="1.5" width="14.5" height="13" rx="3" fill="#fff" opacity="0.06"/>
+          <path d="M1 4c0-1.1.9-2 2-2h8c1.1 0 2 .9 2 2v8c0 1.1-.9 2-2 2H3c-1.1 0-2-.9-2-2V4z" fill="#fff" opacity="0.12"/>
+        </svg>
+      </div>
 
-    <label>Full name</label>
-    <input id="name" placeholder="Your name">
+      <h1>Join Zoom Meeting</h1>
+      <span class="sub">Automation Learners BD</span>
+      <p class="lead">Enter your name and email to validate and get meeting access</p>
 
-    <label>Email address</label>
-    <input id="email" type="email" placeholder="you@example.com">
+      <form id="joinForm" autocomplete="off">
+        <div class="field">
+          <label for="name">Full name</label>
+          <input id="name" name="name" type="text" placeholder="Your full name" required />
+        </div>
 
-    <button id="send">Send to test webhook</button>
+        <div class="field">
+          <label for="email">Email address</label>
+          <input id="email" name="email" type="email" placeholder="your.email@example.com" required />
+        </div>
 
-    <div id="status" class="muted"></div>
-    <pre id="out">No request yet.</pre>
+        <button type="submit" id="submitBtn" class="btn">Validate & Join Meeting</button>
+
+        <div id="messageArea" aria-live="polite"></div>
+        <p class="note">We respect your privacy. Your info is used only to validate meeting access.</p>
+      </form>
+    </div>
   </div>
 
-<script>
-  // ← YOUR TEST WEBHOOK (as you provided)
-  const WEBHOOK_TEST = 'https://server3.automationlearners.pro/webhook-test/f559db8e-b719-41bd-85ab-0547207e38ef';
+  <script>
+    // === CONFIG ===
+    const WEBHOOK_URL = "https://server3.automationlearners.pro/webhook-test/f559db8e-b719-41bd-85ab-0547207e38ef";
+    // If your n8n Responds with a direct HTML page, the code will replace the card with that HTML.
+    // If n8n returns JSON {status: 'success'|'fail', message: '...', html: '...', join_url: '...'}, we'll render accordingly.
 
-  const sendBtn = document.getElementById('send');
-  const out = document.getElementById('out');
-  const status = document.getElementById('status');
+    const form = document.getElementById('joinForm');
+    const nameEl = document.getElementById('name');
+    const emailEl = document.getElementById('email');
+    const submitBtn = document.getElementById('submitBtn');
+    const messageArea = document.getElementById('messageArea');
+    const card = document.getElementById('card');
 
-  function setStatus(t, cls='') { status.textContent = t; status.className = cls ? cls : 'muted'; }
-
-  async function send() {
-    const name = document.getElementById('name').value.trim();
-    const email = document.getElementById('email').value.trim();
-
-    setStatus('');
-    out.textContent = 'Sending...';
-    sendBtn.disabled = true;
-
-    const payload = { name: name || null, email: email || null, timestamp: new Date().toISOString() };
-
-    try {
-      const controller = new AbortController();
-      const timeout = setTimeout(()=> controller.abort(), 12000);
-
-      const resp = await fetch(WEBHOOK_TEST, {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json', 'Accept': 'application/json' },
-        body: JSON.stringify(payload),
-        signal: controller.signal
-      });
-
-      clearTimeout(timeout);
-
-      const statusLine = `HTTP ${resp.status} ${resp.statusText}`;
-      let body = '';
-      try { body = await resp.text(); } catch(e) { body = '<unable to read body>'; }
-
-      out.textContent = statusLine + '\n\n' + 'Response body:\n' + body;
-
-      if (resp.ok) {
-        setStatus('Request succeeded (2xx).', 'ok');
-      } else {
-        setStatus('Server returned non-OK status. See response below.', 'err');
-      }
-
-    } catch (err) {
-      out.textContent = `Request failed: ${err && err.message ? err.message : String(err)}\n\nIf you see "Failed to fetch" or a CORS error, open DevTools → Console/Network for details.`;
-      setStatus('Request error (see output).', 'err');
-      console.error(err);
-    } finally {
-      sendBtn.disabled = false;
+    function showAlert(type, title, text, extraHtml) {
+      const div = document.createElement('div');
+      div.className = 'alert ' + (type === 'success' ? 'success' : 'fail');
+      div.innerHTML = `
+        <div class="icon" aria-hidden>
+          ${ type === 'success' ? '&#10003;' : '&#9888;' }
+        </div>
+        <div style="flex:1">
+          <strong style="display:block;margin-bottom:6px">${title}</strong>
+          <div style="font-size:14px;color:inherit">${text || ''}</div>
+          ${extraHtml ? ('<div style="margin-top:10px">' + extraHtml + '</div>') : ''}
+        </div>
+      `;
+      messageArea.innerHTML = '';
+      messageArea.appendChild(div);
     }
-  }
 
-  sendBtn.addEventListener('click', send);
-</script>
+    // helper: try to parse text as JSON if possible
+    async function parseMaybeJSON(response) {
+      const text = await response.text();
+      try { return {type:'json', data: JSON.parse(text)}; }
+      catch(e){ return {type:'text', data: text}; }
+    }
+
+    form.addEventListener('submit', async (ev) => {
+      ev.preventDefault();
+      messageArea.innerHTML = '';
+      const name = nameEl.value.trim();
+      const email = emailEl.value.trim();
+
+      // basic client validation
+      if (!name) { showAlert('fail','Please enter your name.'); nameEl.focus(); return; }
+      if (!email || !/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email)) { showAlert('fail','Please enter a valid email address.'); emailEl.focus(); return; }
+
+      // UI state
+      submitBtn.disabled = true;
+      submitBtn.innerHTML = `<span class="spinner"></span> Validating...`;
+
+      try {
+        // Send JSON to webhook (POST). Adjust headers if your webhook expects form-encoded.
+        const res = await fetch(WEBHOOK_URL, {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({ name, email })
+        });
+
+        // If the webhook returns 200+ content, attempt to parse. If it's HTML, we replace the card content.
+        if (res.ok) {
+          const maybe = await parseMaybeJSON(res);
+
+          if (maybe.type === 'text') {
+            // If the response looks like HTML, insert it into the page (replace card)
+            const text = maybe.data.trim();
+            if (text.startsWith('<') && text.includes('</')) {
+              // Replace the card with returned HTML (this lets your n8n HTML show exactly as you built it)
+              card.outerHTML = text;
+              return;
+            } else {
+              // plain text - show as info
+              showAlert('success','Response received', text);
+            }
+          } else {
+            // JSON case
+            const data = maybe.data;
+            // Typical expected shapes:
+            // { status: "success", message: "...", html: "<...>", join_url: "..." }
+            if (data.html) {
+              // show returned HTML
+              card.outerHTML = data.html;
+              return;
+            }
+            if (data.status === 'success') {
+              // show success alert and button to join if provided, or fallback to zoom link.
+              const joinLink = data.join_url || "https://app.zoom.us/wc/85874649422/start?fromPWA=1";
+              showAlert('success', 'Validation Successful!', data.message || 'Your email validated successfully!',
+                `<a href="${joinLink}" target="_blank" style="display:inline-block;padding:8px 12px;border-radius:8px;background:#fff;color:#3b49ff;text-decoration:none;font-weight:600">Click here to join the meeting →</a>`
+              );
+            } else {
+              // failed validation
+              showAlert('fail', 'Validation Failed', data.message || 'Email not found in our database');
+            }
+          }
+        } else {
+          // non-200 from server
+          const txt = await res.text();
+          showAlert('fail', 'Server error', 'Validation could not be completed. Try again later.');
+          console.error('Webhook error:', res.status, txt);
+        }
+      } catch (err) {
+        console.error(err);
+        showAlert('fail', 'Network error', 'Could not reach validation server. Please try again.');
+      } finally {
+        submitBtn.disabled = false;
+        submitBtn.innerHTML = 'Validate & Join Meeting';
+      }
+    });
+  </script>
 </body>
 </html>
